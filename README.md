@@ -1,4 +1,4 @@
-<img src="./assets/icon.png" width="200" height="200"/>
+<img src="./src./assets/icon.png" width="200" height="200"/>
 <h1>Mobius Teaching</h1>
 <p>Mobius teaching is an app for teacher to create classes and share there quizes, pdf, images in the class while students can join the class by simply using the class code provided by the teacher. (Like Google Classroom)</p>
 
