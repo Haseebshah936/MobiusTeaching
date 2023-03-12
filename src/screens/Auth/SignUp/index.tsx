@@ -136,7 +136,7 @@ const SignUp = ({ navigation }) => {
 
             <View style={styles.signupTextContainer}>
               <Text style={{ fontSize: 16, color: colors.black }}>
-                You don't have an account yet?{" "}
+                Already have an account?{" "}
               </Text>
               <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
                 <Text
