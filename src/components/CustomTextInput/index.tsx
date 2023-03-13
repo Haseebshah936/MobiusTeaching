@@ -27,7 +27,7 @@ type CustomTextInputProps = TextInputProps & {
   inputContainerStyle?: StyleProp<ViewProps> | any;
   inputStyle?: StyleProp<ViewProps> | any;
   labelStyle?: StyleProp<ViewProps> | any;
-  placeholder?: string;
+  placeholder?: any;
   textContentType?: string;
   touched?: boolean;
   secureTextEntry?: boolean;
@@ -153,7 +153,7 @@ const CustomTextInput = ({
               },
             ]}
           >
-            {displayDateWithSlash(value ? value : placeholder)}
+            {displayDateWithSlash(value ? value : new Date())}
           </Text>
         </Pressable>
       )}

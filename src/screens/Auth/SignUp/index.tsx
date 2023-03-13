@@ -23,11 +23,15 @@ import { useCustomContext } from "../../../hooks/useCustomContext";
 import { signUp } from "../../../config/firebase/functions";
 
 const signupValidationSchema = yup.object().shape({
-  fullName: yup.string().required("Full Name is Required"),
   email: yup.string().email().required("Email Address is Required"),
   password: yup
     .string()
     .min(6, ({ min }) => `Password must be at least ${min} characters`)
+    .required("Password is required"),
+  confirmPassword: yup
+    .string()
+    .min(6, ({ min }) => `Password must be at least ${min} characters`)
+    .oneOf([yup.ref("password"), null], "Passwords must match")
     .required("Password is required"),
 });
 
@@ -38,8 +42,7 @@ const SignUp = ({ navigation }) => {
     { setSubmitting, setFieldError }
   ) => {
     try {
-      await signUp(values.email, values.password, values.fullName);
-      setUser({ ...values });
+      await signUp(values.email, values.password);
       setSubmitting(false);
     } catch (error) {
       console.log("🚀 ~ file: index.tsx:43 ~ handleSignUp ~ error:", error);
@@ -50,10 +53,9 @@ const SignUp = ({ navigation }) => {
     <ScreenWrapper>
       <Formik
         initialValues={{
-          fullName: "",
           email: "",
           password: "",
-          rememberMe: false,
+          confirmPassword: "",
         }}
         validationSchema={signupValidationSchema}
         onSubmit={(values, { setSubmitting, setFieldError }) => {
@@ -83,16 +85,6 @@ const SignUp = ({ navigation }) => {
             </View>
             <View>
               <CustomTextInput
-                label="Full name"
-                placeholder={"John doe"}
-                onChangeText={handleChange("fullName")}
-                onBlur={() => setFieldTouched("fullName")}
-                value={values.fullName}
-                selectionColor={colors.primary}
-                touched={touched.fullName}
-                error={errors.fullName}
-              />
-              <CustomTextInput
                 label="Email"
                 placeholder={"JohnDoe@example.com"}
                 textContentType="emailAddress"
@@ -115,6 +107,18 @@ const SignUp = ({ navigation }) => {
                 selectionColor={colors.primary}
                 touched={touched.password}
                 error={errors.password}
+              />
+              <CustomTextInput
+                label="Confirm Password"
+                placeholder={"Confirm Password"}
+                textContentType="password"
+                secureTextEntry
+                onChangeText={handleChange("confirmPassword")}
+                onBlur={() => setFieldTouched("confirmPassword")}
+                value={values.confirmPassword}
+                selectionColor={colors.primary}
+                touched={touched.confirmPassword}
+                error={errors.confirmPassword}
               />
             </View>
             <View style={styles.row}>
