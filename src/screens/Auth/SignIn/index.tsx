@@ -23,6 +23,7 @@ import {
 } from "../../../components";
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import { signIn } from "../../../config/firebase/functions";
+import * as SecureStore from "expo-secure-store";
 
 const loginValidationSchema = yup.object().shape({
   email: yup.string().email().required("Email Address is Required"),
@@ -38,6 +39,11 @@ const Login = ({ navigation }) => {
   const handleLogin = async (values: any, { setSubmitting, setFieldError }) => {
     try {
       await signIn(values.email, values.password);
+      const user = JSON.stringify({
+        email: values.email,
+        password: values.password,
+      });
+      await SecureStore.setItemAsync("auth", user);
       setSubmitting(false);
     } catch (error) {
       setSubmitting(false);

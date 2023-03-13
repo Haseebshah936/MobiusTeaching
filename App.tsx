@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { onAuthStateChanged } from "firebase/auth";
+import { Auth, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./src/config/firebase";
 import AuthNavigator from "./src/navigation/AuthNavigator";
 import AppNavigator from "./src/navigation/AppNavigator";
@@ -10,13 +10,42 @@ import { CustomContextProvider } from "./src/hooks/useCustomContext";
 import { doc, getDoc } from "firebase/firestore";
 import CreateProfileStack from "./src/navigation/CreateProfileStack";
 import { Loading } from "./src/screens/Auth";
+import * as SecureStore from "expo-secure-store";
+import { signIn } from "./src/config/firebase/functions";
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    let unsubscribe;
+    getUserAuth().then(() => {
+      unsubscribe = authListener();
+    });
+    return unsubscribe;
+  }, []);
+
+  const getUserAuth = async () => {
+    try {
+      const auth = await SecureStore.getItemAsync("auth");
+      console.log("🚀 ~ file: App.tsx:43 ~ getUserAuth ~ auth", auth);
+      if (auth) {
+        const { email, password } = JSON.parse(auth);
+        await signIn(email, password);
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log("Error getting document:", error);
+      setLoading(false);
+      setUser(null);
+    }
+  };
+
+  const authListener = async () => {
+    await getUserAuth();
+    return onAuthStateChanged(auth, (user) => {
       if (user) {
         const ref = doc(db, "users", user.uid);
         getDoc(ref)
@@ -33,6 +62,8 @@ export default function App() {
           })
           .catch((error) => {
             console.log("Error getting document:", error);
+            setUser(null);
+            setLoading(false);
           });
       } else {
         console.log("No user");
@@ -40,8 +71,7 @@ export default function App() {
         setLoading(false);
       }
     });
-    return unsubscribe;
-  }, []);
+  };
 
   return (
     <NavigationContainer>

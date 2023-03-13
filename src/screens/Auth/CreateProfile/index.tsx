@@ -42,10 +42,10 @@ const profileValidationSchema = yup.object().shape({
       }
       if (value) {
         const age = new Date().getFullYear() - value.getFullYear();
-        if (age < 18) {
+        if (age < 13) {
           return this.createError({
             path: "dateOfBirth",
-            message: "Age must be 18 or older",
+            message: "Age must be 13 or older",
           });
         }
       }
@@ -148,6 +148,55 @@ const CreateProfile = ({ navigation }) => {
                 touched={touched.dateOfBirth}
                 error={errors.dateOfBirth}
               />
+              <View style={styles.typeContainer}>
+                <Text style={{ color: colors.black, fontSize: 16 }}>
+                  {"I am a"}
+                </Text>
+                <View style={styles.btnWrapper}>
+                  <CustomButton
+                    onPress={() => setFieldValue("type", "student")}
+                    text="Student"
+                    btnContainerStyle={[
+                      styles.btnContainer,
+                      {
+                        backgroundColor:
+                          values.type === "student"
+                            ? colors.primary
+                            : colors.white,
+                      },
+                    ]}
+                    styleBtn={styles.btn}
+                    styleText={{
+                      textTransform: null,
+                      color:
+                        values.type === "teacher"
+                          ? colors.primary
+                          : colors.white,
+                    }}
+                  />
+                  <CustomButton
+                    onPress={() => setFieldValue("type", "teacher")}
+                    text="Teacher"
+                    btnContainerStyle={[
+                      styles.btnContainer,
+                      {
+                        backgroundColor:
+                          values.type === "teacher"
+                            ? colors.primary
+                            : colors.white,
+                      },
+                    ]}
+                    styleBtn={styles.btn}
+                    styleText={{
+                      textTransform: null,
+                      color:
+                        values.type === "student"
+                          ? colors.primary
+                          : colors.white,
+                    }}
+                  />
+                </View>
+              </View>
             </View>
             <CustomButton
               onPress={handleSubmit}
@@ -209,5 +258,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginVertical: 5,
+  },
+  typeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  btnWrapper: {
+    flexDirection: "row",
+    columnGap: 10,
+  },
+  btnContainer: {
+    justifyContent: "center",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  btn: {
+    marginVertical: 0,
+    paddingVertical: 5,
+    backgroundColor: "transparent",
   },
 });

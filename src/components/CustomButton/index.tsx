@@ -1,10 +1,14 @@
 import {
   ActivityIndicator,
+  StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableNativeFeedback,
   TouchableOpacity,
   View,
+  ViewProps,
+  ViewStyle,
 } from "react-native";
 import React from "react";
 import colors from "../../utils/colors";
@@ -14,15 +18,15 @@ type CustomButtonProps = {
   loading?: boolean;
   disabled?: boolean;
   text?: string;
-  btnContainerStyle?: any;
-  styleBtn?: any;
-  styleText?: any;
-  styleLoader?: any;
+  btnContainerStyle?: StyleProp<ViewStyle>;
+  styleBtn?: StyleProp<ViewStyle>;
+  styleText?: StyleProp<TextStyle>;
+  iconTextContainerStyle?: StyleProp<ViewStyle>;
+  Righticonstyle?: StyleProp<ViewStyle>;
+  styleLoader?: StyleProp<ViewStyle>;
   loaderColor?: string;
-  iconTextContainerStyle?: any;
   icon?: any;
   iconRight?: any;
-  Righticonstyle?: any;
   activeOpacity?: number;
 };
 
