@@ -5,6 +5,8 @@ import ImagePicker from "./ImagePicker";
 import ProfileDetailsCard from "./ProfileDetailsCard";
 import CustomModal from "./CustomModal";
 import ConfirmationModalBody from "./ConfirmationModalBody";
+import CustomIconButton from "./CustomIconButton";
+import TextInputModalBody from "./TextInputModalBody";
 
 export {
   ScreenWrapper,
@@ -14,4 +16,6 @@ export {
   ProfileDetailsCard,
   CustomModal,
   ConfirmationModalBody,
+  CustomIconButton,
+  TextInputModalBody,
 };

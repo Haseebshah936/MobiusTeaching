@@ -79,10 +79,7 @@ const EditProfile = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <>
       <Formik
         initialValues={{
           profilePic: user?.profilePic,
@@ -112,7 +109,9 @@ const EditProfile = ({ navigation }) => {
           >
             <ImagePicker
               imageUri={values.profilePic}
-              setImageUri={(uri) => setFieldValue("profilePic", uri)}
+              setImageUri={(uri) => {
+                setFieldValue("profilePic", uri);
+              }}
               onBlur={() => setFieldTouched("profilePic")}
               touched={touched.profilePic as boolean}
               error={errors.profilePic as string}
@@ -134,11 +133,9 @@ const EditProfile = ({ navigation }) => {
               label="Date of Birth"
               isDateInput={true}
               onChangeText={(date: any) => {
-                console.log("Date ", date);
                 setFieldValue("dateOfBirth", date);
               }}
               onBlur={() => setFieldTouched("dateOfBirth")}
-              inputContainerStyle={{ paddingLeft: 20 }}
               value={values.dateOfBirth as any}
               selectionColor={colors.primary}
               touched={touched.dateOfBirth as boolean}
@@ -201,7 +198,7 @@ const EditProfile = ({ navigation }) => {
           </ScrollView>
         )}
       </Formik>
-    </KeyboardAvoidingView>
+    </>
   );
 };
 
@@ -210,49 +207,12 @@ export default EditProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
   },
   scrollContainer: {
     paddingHorizontal: 20,
     paddingVertical: 20,
     flexGrow: 1,
-    // backgroundColor: colors.danger,
-  },
-  title: {
-    fontSize: 30,
-    alignSelf: "center",
-    fontWeight: "600",
-    marginVertical: 30,
-    letterSpacing: 1,
-  },
-  titleContainer: {
-    justifyContent: "center",
-  },
-  logo: { alignSelf: "center", width: 180, height: 180 },
-
-  errorText: { fontSize: 12, color: "#FF0D10" },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: colors.bgColor,
-  },
-  forgetPassowrdContainer: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-  },
-  forgetPasswordText: {
-    color: colors.black,
-  },
-  checkBoxContainer: {
-    marginLeft: 0,
-    paddingLeft: 0,
-    backgroundColor: "transparent",
-  },
-  signupTextContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginVertical: 5,
+    backgroundColor: colors.white,
   },
   typeContainer: {
     flexDirection: "row",

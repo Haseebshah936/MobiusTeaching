@@ -24,6 +24,7 @@ type ImagePickerProps = {
   error?: string;
   containerStyle?: StyleProp<ViewStyle>;
   imageContainerStyle?: StyleProp<ViewStyle>;
+  imageFor?: "profile" | "other";
 };
 
 function ImagePicker({
@@ -35,6 +36,7 @@ function ImagePicker({
   error,
   containerStyle,
   imageContainerStyle,
+  imageFor = "profile",
 }: ImagePickerProps) {
   const pickImage = async () => {
     try {
@@ -47,7 +49,7 @@ function ImagePicker({
       if (!result.canceled) {
         setImageUri(result.assets[0].uri);
       } else {
-        Alert.alert("Profile Picture", "You have closed the photo gallery");
+        // Alert.alert("Profile Picture", "You have closed the photo gallery");
         onBlur();
       }
     } catch (error) {
@@ -102,7 +104,11 @@ function ImagePicker({
             )}
             {!imageUri && (
               <Image
-                source={require("../../assets/Images/user.png")}
+                source={
+                  imageFor === "profile"
+                    ? require("../../assets/Images/user.png")
+                    : require("../../assets/Images/imagePlaceholder.png")
+                }
                 style={styles.image}
               />
             )}

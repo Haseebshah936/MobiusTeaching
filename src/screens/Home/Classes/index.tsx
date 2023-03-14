@@ -11,8 +11,14 @@ import { FlashList } from "@shopify/flash-list";
 
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import colors from "../../../utils/colors";
-import { CustomTextInput } from "../../../components";
+import {
+  CustomIconButton,
+  CustomModal,
+  CustomTextInput,
+  TextInputModalBody,
+} from "../../../components";
 import ClassItem from "./ClassItem";
+import { ModalizeProps } from "react-native-modalize";
 
 interface Class {
   id: number;
@@ -85,7 +91,10 @@ const Classes = ({ navigation }) => {
   const { user } = useCustomContext();
   const [search, setSearch] = useState("");
   const [classes, setClasses] = useState<Class[]>([]);
+  const [joinClassCode, setJoinClassCode] = useState("");
+  const [joiningClass, setJoiningClass] = useState(false);
   const classesDataRef = useRef<Class[]>();
+  const joinClassModalRef = useRef(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -98,13 +107,15 @@ const Classes = ({ navigation }) => {
         </TouchableOpacity>
       ),
       headerRight: () => (
-        <TouchableHighlight
-          style={styles.plusButton}
-          underlayColor={colors.lightGrey}
-          onPress={() => navigation.navigate("CreateClass")}
+        <CustomIconButton
+          onPress={() => {
+            user.type === "teacher"
+              ? navigation.navigate("CreateClass")
+              : joinClassModalRef.current?.open();
+          }}
         >
           <AntDesign name="plus" size={20} color={colors.black} />
-        </TouchableHighlight>
+        </CustomIconButton>
       ),
     });
   }, [user]);
@@ -126,6 +137,14 @@ const Classes = ({ navigation }) => {
         item.name.toLowerCase().includes(text.toLowerCase())
       )
     );
+  };
+
+  const handleJoinClass = () => {
+    setJoiningClass(true);
+    setTimeout(() => {
+      setJoiningClass(false);
+      joinClassModalRef.current?.close();
+    }, 1000);
   };
 
   return (
@@ -154,7 +173,7 @@ const Classes = ({ navigation }) => {
             item={item}
             onPress={() =>
               navigation.navigate("Class", {
-                class: item,
+                item,
               })
             }
           />
@@ -162,6 +181,19 @@ const Classes = ({ navigation }) => {
         estimatedItemSize={100}
         extraData={1}
       />
+      <CustomModal modalRef={joinClassModalRef}>
+        <TextInputModalBody
+          title="Join Class"
+          details="Enter the class code to join the class"
+          placeholder="Enter class code"
+          buttonText="Join"
+          onChangeText={setJoinClassCode}
+          value={joinClassCode}
+          btnDisabled={!joinClassCode}
+          loading={joiningClass}
+          onPressBtn={handleJoinClass}
+        />
+      </CustomModal>
     </View>
   );
 };
@@ -188,10 +220,5 @@ const styles = StyleSheet.create({
   },
   input: {
     marginLeft: 10,
-  },
-  plusButton: {
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: colors.white,
   },
 });

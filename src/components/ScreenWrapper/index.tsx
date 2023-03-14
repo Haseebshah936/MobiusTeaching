@@ -20,14 +20,7 @@ const ScreenWrapper = ({
   style = styles.container,
 }: ScreenWrapperProps) => {
   return (
-    <SafeAreaView style={[styles.container, style]}>
-      <KeyboardAvoidingView
-        style={[styles.container, style]}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        {children}
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+    <SafeAreaView style={[styles.container, style]}>{children}</SafeAreaView>
   );
 };
 

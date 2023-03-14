@@ -1,5 +1,6 @@
 import {
   Alert,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -16,6 +17,7 @@ import {
   CustomButton,
   CustomModal,
   CustomTextInput,
+  TextInputModalBody,
 } from "../../../components";
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import {
@@ -76,126 +78,113 @@ const Settings = ({ navigation }) => {
   };
 
   return (
-    <>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <View style={styles.container}>
+      <Formik
+        initialValues={{
+          oldPassword: user.password,
+          password: "",
+          confirmPassword: "",
+        }}
+        validationSchema={passwordValidationSchema}
+        onSubmit={(values, { setSubmitting, setFieldError }) => {
+          handlePasswordChange(values, { setSubmitting, setFieldError });
+        }}
       >
-        <Formik
-          initialValues={{
-            oldPassword: user.password,
-            password: "",
-            confirmPassword: "",
-          }}
-          validationSchema={passwordValidationSchema}
-          onSubmit={(values, { setSubmitting, setFieldError }) => {
-            handlePasswordChange(values, { setSubmitting, setFieldError });
-          }}
-        >
-          {({
-            values, // Values object
-            handleChange, // onChange function for input
-            errors, // Errors object
-            setFieldTouched,
-            touched, // True if field has been touched
-            isValid, // True if all fields are valid
-            handleSubmit, // Function to submit form
-            isSubmitting, // True if form is submitting
-          }) => (
-            <ScrollView
-              contentContainerStyle={styles.scrollContainer}
-              keyboardShouldPersistTaps="handled"
-            >
-              <View style={styles.inputContainer}>
-                <CustomTextInput
-                  label="Old Password"
-                  placeholder={"Old Password"}
-                  textContentType={"password"}
-                  secureTextEntry
-                  onChangeText={handleChange("oldPassword")}
-                  onBlur={() => setFieldTouched("oldPassword")}
-                  value={values.oldPassword}
-                  selectionColor={colors.primary}
-                  touched={touched.oldPassword as boolean}
-                  error={errors.oldPassword as string}
-                  labelStyle={styles.inputLabel}
-                  containerStyle={styles.textInputContainer}
-                  inputStyle={styles.input}
-                />
-                <CustomTextInput
-                  label="New Password"
-                  placeholder={"New Password"}
-                  textContentType={"password"}
-                  secureTextEntry
-                  value={values.password}
-                  onChangeText={handleChange("password")}
-                  onBlur={() => setFieldTouched("password")}
-                  selectionColor={colors.primary}
-                  touched={touched.password}
-                  error={errors.password}
-                  labelStyle={styles.inputLabel}
-                  containerStyle={styles.textInputContainer}
-                  inputStyle={styles.input}
-                />
-                <CustomTextInput
-                  label="Confirm Password"
-                  placeholder={"Confirm Password"}
-                  textContentType={"password"}
-                  secureTextEntry
-                  onChangeText={handleChange("confirmPassword")}
-                  onBlur={() => setFieldTouched("confirmPassword")}
-                  value={values.confirmPassword}
-                  selectionColor={colors.primary}
-                  touched={touched.confirmPassword}
-                  error={errors.confirmPassword}
-                  labelStyle={styles.inputLabel}
-                  containerStyle={styles.textInputContainer}
-                  inputStyle={styles.input}
-                />
-                <CustomButton
-                  onPress={handleSubmit}
-                  // styleBtn={styles.button}
-                  // styleText={styles.buttonText}
-                  disabled={isSubmitting || !isValid}
-                  loading={isSubmitting}
-                  text={"Update Password"}
-                />
-              </View>
-              <CustomButton
-                styleBtn={styles.button}
-                // styleText={styles.buttonText}
-                text={"Delete Account"}
-                onPress={() => deleteModalRef.current.open()}
+        {({
+          values, // Values object
+          handleChange, // onChange function for input
+          errors, // Errors object
+          setFieldTouched,
+          touched, // True if field has been touched
+          isValid, // True if all fields are valid
+          handleSubmit, // Function to submit form
+          isSubmitting, // True if form is submitting
+        }) => (
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.inputContainer}>
+              <CustomTextInput
+                label="Old Password"
+                placeholder={"Old Password"}
+                textContentType={"password"}
+                secureTextEntry
+                onChangeText={handleChange("oldPassword")}
+                onBlur={() => setFieldTouched("oldPassword")}
+                value={values.oldPassword}
+                selectionColor={colors.primary}
+                touched={touched.oldPassword as boolean}
+                error={errors.oldPassword as string}
+                labelStyle={styles.inputLabel}
+                containerStyle={styles.textInputContainer}
+                inputStyle={styles.input}
               />
-            </ScrollView>
-          )}
-        </Formik>
-      </KeyboardAvoidingView>
+              <CustomTextInput
+                label="New Password"
+                placeholder={"New Password"}
+                textContentType={"password"}
+                secureTextEntry
+                value={values.password}
+                onChangeText={handleChange("password")}
+                onBlur={() => setFieldTouched("password")}
+                selectionColor={colors.primary}
+                touched={touched.password}
+                error={errors.password}
+                labelStyle={styles.inputLabel}
+                containerStyle={styles.textInputContainer}
+                inputStyle={styles.input}
+              />
+              <CustomTextInput
+                label="Confirm Password"
+                placeholder={"Confirm Password"}
+                textContentType={"password"}
+                secureTextEntry
+                onChangeText={handleChange("confirmPassword")}
+                onBlur={() => setFieldTouched("confirmPassword")}
+                value={values.confirmPassword}
+                selectionColor={colors.primary}
+                touched={touched.confirmPassword}
+                error={errors.confirmPassword}
+                labelStyle={styles.inputLabel}
+                containerStyle={styles.textInputContainer}
+                inputStyle={styles.input}
+              />
+              <CustomButton
+                onPress={handleSubmit}
+                // styleBtn={styles.button}
+                // styleText={styles.buttonText}
+                disabled={isSubmitting || !isValid}
+                loading={isSubmitting}
+                text={"Update Password"}
+              />
+            </View>
+            <CustomButton
+              styleBtn={styles.button}
+              text={"Delete Account"}
+              onPress={() => {
+                deleteModalRef.current.open();
+              }}
+            />
+          </ScrollView>
+        )}
+      </Formik>
       <CustomModal modalRef={deleteModalRef}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.title}>Delete Account</Text>
-          <Text style={styles.details}>
-            Are you sure you want to delete your account? This action cannot be
-            undone.
-          </Text>
-          <CustomTextInput
-            placeholder="Enter your password to confirm"
-            value={oldPassword}
-            onChangeText={setOldPassword}
-            secureTextEntry
-            inputStyle={styles.inputStyle}
-            autoFocus={true}
-          />
-          <CustomButton
-            text="Delete Account"
-            onPress={handleDeleteAccount}
-            disabled={!oldPassword}
-            loading={deleting}
-          />
-          <View style={{ height: Platform.OS === "ios" ? 120 : 30 }} />
-        </View>
+        <TextInputModalBody
+          title="Delete Account"
+          details="Are you sure you want to delete your account? This action cannot be
+          undone."
+          placeholder="Enter your password to confirm"
+          buttonText="Delete Account"
+          onChangeText={setOldPassword}
+          value={oldPassword}
+          btnDisabled={!oldPassword}
+          loading={deleting}
+          onPressBtn={handleDeleteAccount}
+          secureTextEntry
+        />
       </CustomModal>
-    </>
+    </View>
   );
 };
 

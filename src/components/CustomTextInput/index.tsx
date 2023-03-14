@@ -150,6 +150,7 @@ const CustomTextInput = ({
               inputStyle,
               {
                 color: value ? colors.black : colors.placeholder,
+                paddingVertical: Platform.OS === "ios" ? 20 : 17,
               },
             ]}
           >

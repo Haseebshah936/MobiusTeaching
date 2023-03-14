@@ -12,6 +12,7 @@ import {
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import { createProfile } from "../../../config/firebase/functions";
 import colors from "../../../utils/colors";
+import { SafeAreaView } from "react-native";
 
 const profileValidationSchema = yup.object().shape({
   profilePic: yup.string().required("Profile Picture is Required"),
@@ -69,7 +70,7 @@ const CreateProfile = ({ navigation }) => {
   };
 
   return (
-    <ScreenWrapper>
+    <SafeAreaView style={styles.container}>
       <Formik
         initialValues={{
           profilePic: "",
@@ -120,13 +121,11 @@ const CreateProfile = ({ navigation }) => {
               />
               <CustomTextInput
                 label="Date of Birth"
-                //   labelStyle={styles.inputLabelText}
                 isDateInput={true}
                 onChangeText={(date: any) => {
                   setFieldValue("dateOfBirth", date);
                 }}
                 onBlur={() => setFieldTouched("dateOfBirth")}
-                inputContainerStyle={{ paddingLeft: 20 }}
                 value={values.dateOfBirth}
                 selectionColor={colors.primary}
                 touched={touched.dateOfBirth}
@@ -194,7 +193,7 @@ const CreateProfile = ({ navigation }) => {
           </ScrollView>
         )}
       </Formik>
-    </ScreenWrapper>
+    </SafeAreaView>
   );
 };
 
@@ -203,7 +202,7 @@ export default CreateProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.bgColor,
+    backgroundColor: colors.white,
   },
   scrollContainer: {
     padding: 15,
@@ -220,32 +219,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     justifyContent: "center",
   },
-  logo: { alignSelf: "center", width: 180, height: 180 },
 
-  errorText: { fontSize: 12, color: "#FF0D10" },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: colors.bgColor,
-  },
-  forgetPassowrdContainer: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-  },
-  forgetPasswordText: {
-    color: colors.black,
-  },
-  checkBoxContainer: {
-    marginLeft: 0,
-    paddingLeft: 0,
-    backgroundColor: "transparent",
-  },
-  signupTextContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginVertical: 5,
-  },
   typeContainer: {
     flexDirection: "row",
     justifyContent: "space-between",

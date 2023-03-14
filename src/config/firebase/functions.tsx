@@ -122,7 +122,6 @@ const updateUserProfile = async (
   type: string
 ) => {
   const currentUser = auth.currentUser;
-
   const ref = doc(db, "users", currentUser.uid);
   if (profilePic) {
     profilePic = await uploadImage(`profile/${currentUser.uid}`, profilePic);
@@ -130,24 +129,22 @@ const updateUserProfile = async (
       displayName: name,
       photoURL: profilePic,
     });
+    await updateDoc(ref, {
+      name,
+      profilePic,
+      dateOfBirth: new Date(dateOfBirth).getTime(),
+      type,
+    });
   } else {
     await updateProfile(currentUser, {
       displayName: name,
     });
+    await updateDoc(ref, {
+      name,
+      dateOfBirth: new Date(dateOfBirth).getTime(),
+      type,
+    });
   }
-  await updateDoc(ref, {
-    name,
-    profilePic,
-    dateOfBirth: new Date(dateOfBirth).getTime(),
-    type,
-  });
-  return {
-    email: currentUser.email,
-    name,
-    profilePic,
-    dateOfBirth: new Date(dateOfBirth).getTime(),
-    type,
-  };
 };
 
 type reauthenticate = (currentPassword: string) => Promise<void>;
