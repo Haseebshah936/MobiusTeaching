@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Text,
   Image,
+  StyleProp,
+  ViewStyle,
 } from "react-native";
 import * as imagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
@@ -20,6 +22,8 @@ type ImagePickerProps = {
   onBlur?: () => void;
   touched?: boolean;
   error?: string;
+  containerStyle?: StyleProp<ViewStyle>;
+  imageContainerStyle?: StyleProp<ViewStyle>;
 };
 
 function ImagePicker({
@@ -29,7 +33,9 @@ function ImagePicker({
   onBlur = () => {},
   touched,
   error,
-}) {
+  containerStyle,
+  imageContainerStyle,
+}: ImagePickerProps) {
   const pickImage = async () => {
     try {
       let result = await imagePicker.launchImageLibraryAsync({
@@ -83,10 +89,14 @@ function ImagePicker({
         onPress={() => {
           if (!uploading) handleOnPress();
         }}
-        style={uploading ? styles.uploadingContainer : { marginRight: 5 }}
+        style={
+          uploading
+            ? [styles.uploadingContainer, containerStyle]
+            : { marginRight: 5 }
+        }
       >
         {!uploading ? (
-          <View style={styles.container}>
+          <View style={[styles.container, imageContainerStyle]}>
             {imageUri && (
               <Image style={styles.image} source={{ uri: imageUri }} />
             )}
@@ -119,20 +129,20 @@ function ImagePicker({
 export default ImagePicker;
 
 const styles = StyleSheet.create({
+  uploadingContainer: {
+    width: 80,
+    height: 80,
+    backgroundColor: colors.white,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     position: "relative",
     width: 80,
     height: 80,
     borderRadius: 50,
-    backgroundColor: colors.lightGrey,
-  },
-  uploadingContainer: {
-    width: 80,
-    height: 80,
-    backgroundColor: colors.lightGrey,
-    borderRadius: 50,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "transparent",
   },
   errorText: { fontSize: 10, marginTop: 2, color: colors.danger },
   image: { width: 80, height: 80, borderRadius: 50 },

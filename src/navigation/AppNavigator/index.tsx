@@ -12,6 +12,7 @@ export default function AppNavigator() {
       initialRouteName="Classes"
       screenOptions={{
         headerTintColor: colors.primary,
+        headerTitleAlign: "center",
         headerStyle: {
           backgroundColor: colors.white,
         },

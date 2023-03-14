@@ -24,9 +24,7 @@ const Classes = ({ navigation }) => {
   }, [user]);
 
   return (
-    <View>
-      <Button title="LogOut" onPress={() => signOut(auth)} />
-    </View>
+    <View>{/* <Button title="LogOut" onPress={() => signOut(auth)} /> */}</View>
   );
 };
 
@@ -34,9 +32,9 @@ export default Classes;
 
 const styles = StyleSheet.create({
   profilePic: {
-    width: 35,
-    height: 35,
-    borderRadius: 35,
+    width: 40,
+    height: 40,
+    borderRadius: 40,
     backgroundColor: colors.lightGrey,
   },
 });

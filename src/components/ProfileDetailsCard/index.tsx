@@ -22,6 +22,8 @@ type ProfileDetailsCardProps = {
   isDelete?: boolean;
   dividerVisible?: boolean;
   dataComponent?: React.ReactNode;
+  profileDataComponent?: React.ReactNode;
+  profileDataContainerStyle?: StyleProp<ViewStyle>;
   onButtonPress?: () => void;
   onDeletePress?: () => void;
   containerStyle?: StyleProp<ViewStyle>;
@@ -42,6 +44,8 @@ const ProfileDetailsCard = ({
   isDelete = false,
   dividerVisible = true,
   dataComponent,
+  profileDataComponent,
+  profileDataContainerStyle,
   onButtonPress,
   onDeletePress,
   containerStyle = styles.container,
@@ -62,7 +66,14 @@ const ProfileDetailsCard = ({
       >
         <View style={[styles.titleContainer, titleContainerStyle]}>
           {icon}
-          <Text style={[styles.titleText, titleTextStyle]}>{title}</Text>
+          <View
+            style={[styles.profileDataContainer, profileDataContainerStyle]}
+          >
+            <Text numberOfLines={1} style={[styles.titleText, titleTextStyle]}>
+              {title}
+            </Text>
+            {profileDataComponent}
+          </View>
         </View>
         <View
           style={{
@@ -140,11 +151,15 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
+  },
+  profileDataContainer: {
+    flex: 1,
+    marginLeft: 10,
   },
   titleText: {
     fontSize: 14,
     fontWeight: "600",
-    marginLeft: 10,
     letterSpacing: 1,
   },
   btn: {

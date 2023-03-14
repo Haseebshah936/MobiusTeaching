@@ -119,8 +119,11 @@ const EditProfile = ({ navigation }) => {
               imageUri={values.profilePic}
               setImageUri={(uri) => setFieldValue("profilePic", uri)}
               onBlur={() => setFieldTouched("profilePic")}
-              touched={touched.profilePic}
-              error={errors.profilePic}
+              touched={touched.profilePic as boolean}
+              error={errors.profilePic as string}
+              imageContainerStyle={{
+                backgroundColor: colors.grey,
+              }}
             />
             <CustomTextInput
               label="Name"

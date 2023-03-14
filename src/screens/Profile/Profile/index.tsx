@@ -20,17 +20,18 @@ const Profile = ({ navigation }) => {
   const handleSignOut = async () => {
     logOutRef.current.open();
     await SecureStore.deleteItemAsync("auth");
-    setTimeout(() => {
-      signOut(auth);
-    }, 30);
+    signOut(auth);
   };
 
   return (
     <View style={styles.container}>
       <ProfileDetailsCard
-        title={`${user?.name}\n${
-          user?.type.charAt(0).toUpperCase() + user?.type.slice(1)
-        }`}
+        title={user?.name}
+        profileDataComponent={
+          <Text style={styles.detailText}>
+            {user?.type.charAt(0).toUpperCase() + user?.type.slice(1)}
+          </Text>
+        }
         activeOpacity={1}
         iconRight={<View />}
         icon={
@@ -43,10 +44,20 @@ const Profile = ({ navigation }) => {
             style={styles.profilePic}
           />
         }
+        titleTextStyle={{
+          lineHeight: 15,
+          fontSize: 16,
+        }}
         containerStyle={{
           marginHorizontal: 0,
           marginVertical: 0,
+          // width: "80%",
         }}
+        titleContainerStyle={
+          {
+            // flex: 1,
+          }
+        }
       />
 
       <ProfileDetailsCard
@@ -75,7 +86,8 @@ const Profile = ({ navigation }) => {
       />
       <CustomModal modalRef={logOutRef}>
         <ConfirmationModalBody
-          title="Are you sure?"
+          title="LogOut"
+          detailsText="Are you sure you want to logout? You will be redirected to the login screen."
           btn1Text="LogOut"
           btn2Text="Cancel"
           onPressBtn1={handleSignOut}
@@ -98,6 +110,10 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 50,
     backgroundColor: colors.lightGrey,
+  },
+  detailText: {
+    fontSize: 12,
+    marginTop: 5,
   },
   profileDetailsCard: {
     shadowColor: "#000",

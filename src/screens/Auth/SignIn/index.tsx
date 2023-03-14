@@ -47,7 +47,9 @@ const Login = ({ navigation }) => {
       setSubmitting(false);
     } catch (error) {
       setSubmitting(false);
-      Alert.alert("Error", error?.code?.split("/")[1].split("-").join(" "));
+      error.code === "auth/wrong-password"
+        ? Alert.alert("Wrong Password", "Please enter the correct password")
+        : Alert.alert("Error", "Something went wrong. Please try again later");
     }
   };
 

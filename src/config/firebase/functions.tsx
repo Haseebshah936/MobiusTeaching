@@ -1,13 +1,30 @@
 import {
+  EmailAuthProvider,
   createUserWithEmailAndPassword,
+  deleteUser,
+  reauthenticateWithCredential,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   updateCurrentUser,
+  updateEmail,
+  updatePassword,
   updateProfile,
 } from "firebase/auth";
 import { auth, db, storage } from ".";
-import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 import * as ImageManipulator from "expo-image-manipulator";
 
 type signUp = (
@@ -140,6 +157,44 @@ const updateUserProfile = async (
   };
 };
 
+type reauthenticate = (currentPassword: string) => Promise<void>;
+
+const reauthenticate = async (currentPassword) => {
+  const user = auth.currentUser;
+  const cred = EmailAuthProvider.credential(user.email, currentPassword);
+  return reauthenticateWithCredential(user, cred);
+};
+
+type changePassword = (
+  currentPassword: string,
+  newPassword: string
+) => Promise<void>;
+
+const changePassword = async (currentPassword: string, newPassword: string) => {
+  await reauthenticate(currentPassword);
+  const user = auth.currentUser;
+  return updatePassword(user, newPassword);
+};
+
+type changeEmail = (currentPassword: string, newEmail: string) => Promise<void>;
+
+const changeEmail = async (currentPassword: string, newEmail: string) => {
+  await reauthenticate(currentPassword);
+  const user = auth.currentUser;
+  return updateEmail(user, newEmail);
+};
+
+type deleteAccount = (currentPassword: string) => Promise<void>;
+const deleteAccount = async (currentPassword: string) => {
+  await reauthenticate(currentPassword);
+  const user = auth.currentUser;
+  await deleteUser(user);
+  const docRef = doc(db, "users", user.uid);
+  await deleteDoc(docRef);
+  const storageRef = ref(storage, `profile/${user.uid}`);
+  await deleteObject(storageRef);
+};
+
 export {
   signUp,
   signIn,
@@ -147,4 +202,8 @@ export {
   uploadImage,
   createProfile,
   updateUserProfile,
+  reauthenticate,
+  changePassword,
+  changeEmail,
+  deleteAccount,
 };

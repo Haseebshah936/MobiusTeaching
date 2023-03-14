@@ -7,7 +7,7 @@ import AuthNavigator from "./src/navigation/AuthNavigator";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import { CustomContextProvider } from "./src/hooks/useCustomContext";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import CreateProfileStack from "./src/navigation/CreateProfileStack";
 import { Loading } from "./src/screens/Auth";
 import * as SecureStore from "expo-secure-store";
@@ -33,7 +33,6 @@ const App = () => {
   const getUserAuth = async () => {
     try {
       const auth = await SecureStore.getItemAsync("auth");
-      console.log("🚀 ~ file: App.tsx:35 ~ getUserAuth ~ auth", auth);
       if (auth) {
         const { email, password } = JSON.parse(auth);
         await signIn(email, password);
@@ -54,15 +53,18 @@ const App = () => {
       if (user) {
         const ref = doc(db, "users", user.uid);
         getDoc(ref)
-          .then((doc) => {
-            if (doc.exists()) {
+          .then(async (doc) => {
+            if (doc.exists() && doc.data().email) {
               setUser(doc.data());
-              console.log("Document data:", doc.data());
               setLoading(false);
             } else {
-              console.log("No such document!");
               setLoading(false);
-              setUser(null);
+              await setDoc(ref, {
+                email: user.email,
+              });
+              setUser({
+                email: user.email,
+              });
             }
           })
           .catch((error) => {
