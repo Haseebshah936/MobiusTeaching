@@ -5,20 +5,11 @@ import {
   reauthenticateWithCredential,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  updateCurrentUser,
   updateEmail,
   updatePassword,
   updateProfile,
 } from "firebase/auth";
-import { auth, db, storage } from ".";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import {
   deleteObject,
   getDownloadURL,
@@ -26,6 +17,8 @@ import {
   uploadBytes,
 } from "firebase/storage";
 import * as ImageManipulator from "expo-image-manipulator";
+
+import { auth, db, storage } from ".";
 
 type signUp = (
   email: string,

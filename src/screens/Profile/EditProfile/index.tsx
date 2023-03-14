@@ -6,23 +6,18 @@ import {
   Platform,
   Text,
 } from "react-native";
-import React, { useEffect } from "react";
-import colors from "../../../utils/colors";
+import React from "react";
 import * as yup from "yup";
 import { Formik } from "formik";
+
 import {
   CustomButton,
   CustomTextInput,
   ImagePicker,
-  ScreenWrapper,
 } from "../../../components";
 import { useCustomContext } from "../../../hooks/useCustomContext";
-import {
-  createProfile,
-  signIn,
-  updateUserProfile,
-  uploadImage,
-} from "../../../config/firebase/functions";
+import { updateUserProfile } from "../../../config/firebase/functions";
+import colors from "../../../utils/colors";
 
 const profileValidationSchema = yup.object().shape({
   profilePic: yup.string().required("Profile Picture is Required"),

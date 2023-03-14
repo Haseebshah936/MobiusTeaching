@@ -8,21 +8,21 @@ import {
   View,
 } from "react-native";
 import React, { useRef, useState } from "react";
+import * as yup from "yup";
+import { Formik } from "formik";
+import * as SecureStore from "expo-secure-store";
+
 import {
   CustomButton,
   CustomModal,
   CustomTextInput,
-  ScreenWrapper,
 } from "../../../components";
-import * as yup from "yup";
-import colors from "../../../utils/colors";
-import { Formik } from "formik";
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import {
   changePassword,
   deleteAccount,
 } from "../../../config/firebase/functions";
-import * as SecureStore from "expo-secure-store";
+import colors from "../../../utils/colors";
 
 const passwordValidationSchema = yup.object().shape({
   oldPassword: yup

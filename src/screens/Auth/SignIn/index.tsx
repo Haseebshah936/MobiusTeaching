@@ -3,19 +3,14 @@ import {
   Text,
   View,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
   TouchableOpacity,
-  Image,
-  TextInput,
-  StyleProp,
-  TextStyle,
   Alert,
 } from "react-native";
-import React, { useEffect } from "react";
-import colors from "../../../utils/colors";
+import React from "react";
 import * as yup from "yup";
 import { Formik } from "formik";
+import * as SecureStore from "expo-secure-store";
+
 import {
   CustomButton,
   CustomTextInput,
@@ -23,7 +18,7 @@ import {
 } from "../../../components";
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import { signIn } from "../../../config/firebase/functions";
-import * as SecureStore from "expo-secure-store";
+import colors from "../../../utils/colors";
 
 const loginValidationSchema = yup.object().shape({
   email: yup.string().email().required("Email Address is Required"),

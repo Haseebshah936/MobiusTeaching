@@ -1,6 +1,7 @@
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import React from "react";
 import { Modalize, ModalizeProps } from "react-native-modalize";
+
 import colors from "../../utils/colors";
 
 type CustomModalProps = ModalizeProps & {

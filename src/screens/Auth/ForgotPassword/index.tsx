@@ -1,24 +1,15 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Image,
-} from "react-native";
+import { StyleSheet, Text, View, ScrollView, Image, Alert } from "react-native";
 import React from "react";
-// import { TextInput } from "react-native-paper";
-import colors from "../../../utils/colors";
 import * as yup from "yup";
 import { Formik } from "formik";
+
 import {
   CustomButton,
   CustomTextInput,
   ScreenWrapper,
 } from "../../../components";
-import { Alert } from "react-native";
 import { forgotPassword } from "../../../config/firebase/functions";
+import colors from "../../../utils/colors";
 
 const emailValidationSchema = yup.object().shape({
   email: yup.string().email().required("Email Address is Required"),

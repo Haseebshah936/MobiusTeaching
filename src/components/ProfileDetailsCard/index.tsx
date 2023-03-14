@@ -9,8 +9,9 @@ import {
   ViewStyle,
 } from "react-native";
 import React from "react";
-import colors from "../../utils/colors";
 import { Ionicons, AntDesign, MaterialIcons } from "@expo/vector-icons";
+
+import colors from "../../utils/colors";
 
 const padding = Platform.OS === "ios" ? 20 : 15;
 

@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Classes } from "../../screens/Home";
-import ProfileStack from "./ProfileStack";
-import colors from "../../utils/colors";
+
 import { EditProfile, Profile, Settings } from "../../screens/Profile";
-import { View } from "react-native";
+import { Classes } from "../../screens/Home";
+import colors from "../../utils/colors";
+
 const STACK = createNativeStackNavigator();
 
 export default function AppNavigator() {

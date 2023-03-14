@@ -1,14 +1,14 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import React, { useLayoutEffect, useRef } from "react";
-import {
-  ConfirmationModalBody,
-  CustomButton,
-  CustomModal,
-  ProfileDetailsCard,
-} from "../../../components";
+import React, { useRef } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 import { signOut } from "firebase/auth";
+
+import {
+  ConfirmationModalBody,
+  CustomModal,
+  ProfileDetailsCard,
+} from "../../../components";
 import { auth } from "../../../config/firebase";
 import colors from "../../../utils/colors";
 import { useCustomContext } from "../../../hooks/useCustomContext";

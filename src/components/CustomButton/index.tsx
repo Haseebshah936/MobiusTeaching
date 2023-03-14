@@ -4,13 +4,12 @@ import {
   StyleSheet,
   Text,
   TextStyle,
-  TouchableNativeFeedback,
   TouchableOpacity,
   View,
-  ViewProps,
   ViewStyle,
 } from "react-native";
 import React from "react";
+
 import colors from "../../utils/colors";
 
 type CustomButtonProps = {

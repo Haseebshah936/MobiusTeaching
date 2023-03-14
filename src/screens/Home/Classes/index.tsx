@@ -1,8 +1,6 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import React, { useLayoutEffect } from "react";
-import { Button } from "react-native";
-import { signOut } from "firebase/auth";
-import { auth } from "../../../config/firebase";
+
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import colors from "../../../utils/colors";
 

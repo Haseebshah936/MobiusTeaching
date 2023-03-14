@@ -10,11 +10,12 @@ import {
   ViewProps,
 } from "react-native";
 import React, { memo, useState } from "react";
-import colors from "../../utils/colors";
 import { Feather } from "@expo/vector-icons";
 import MaskInput from "react-native-mask-input";
 import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+
+import colors from "../../utils/colors";
 import displayDateWithSlash from "../../utils/DateAndTime/displayDateWithSlash";
 
 type CustomTextInputProps = TextInputProps & {
