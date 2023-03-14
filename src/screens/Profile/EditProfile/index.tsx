@@ -144,7 +144,7 @@ const EditProfile = ({ navigation }) => {
               touched={touched.dateOfBirth as boolean}
               error={errors.dateOfBirth as string}
             />
-            <View style={styles.typeContainer}>
+            {/* <View style={styles.typeContainer}>
               <Text style={{ color: colors.black, fontSize: 16 }}>
                 {"I am a"}
               </Text>
@@ -188,7 +188,7 @@ const EditProfile = ({ navigation }) => {
                   }}
                 />
               </View>
-            </View>
+            </View> */}
             <CustomButton
               onPress={handleSubmit}
               disabled={isSubmitting || !isValid}

@@ -53,11 +53,6 @@ const Profile = ({ navigation }) => {
           marginVertical: 0,
           // width: "80%",
         }}
-        titleContainerStyle={
-          {
-            // flex: 1,
-          }
-        }
       />
 
       <ProfileDetailsCard
