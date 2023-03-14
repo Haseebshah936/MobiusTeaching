@@ -20,7 +20,7 @@ import displayDateWithSlash from "../../utils/DateAndTime/displayDateWithSlash";
 type CustomTextInputProps = TextInputProps & {
   onChangeText?: (text: any) => void;
   onBlur?: () => void;
-  value?: string;
+  value?: string | any;
   label?: string;
   isDateInput?: boolean;
   containerStyle?: StyleProp<ViewProps> | any;
@@ -80,7 +80,6 @@ const CustomTextInput = ({
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
-    // onBlur();
   };
 
   const handleConfirm = (date: any) => {
@@ -169,7 +168,6 @@ const CustomTextInput = ({
         onCancel={hideDatePicker}
         date={new Date(value ? value : Date.now())}
         onHide={onBlur}
-        // onChange={onChangeText}
       />
     </View>
   );

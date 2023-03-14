@@ -6,7 +6,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth, db, storage } from ".";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import * as ImageManipulator from "expo-image-manipulator";
 
@@ -67,7 +67,7 @@ type createProfile = (
 
 const createProfile = async (
   name: string,
-  photoUrl: string,
+  profilePic: string,
   dateOfBirth: Date,
   type: string
 ) => {
@@ -76,19 +76,75 @@ const createProfile = async (
     displayName: name,
   });
   const ref = doc(db, "users", currentUser.uid);
-  photoUrl = await uploadImage(`profile/${currentUser.uid}`, photoUrl);
-  return await setDoc(
+  profilePic = await uploadImage(`profile/${currentUser.uid}`, profilePic);
+  await setDoc(
     ref,
     {
       name,
-      profilePic: photoUrl,
-      dateOfBirth,
+      profilePic,
+      dateOfBirth: new Date(dateOfBirth).getTime(),
       type,
     },
     {
       merge: true,
     }
   );
+  return {
+    email: currentUser.email,
+    name,
+    profilePic,
+    dateOfBirth: new Date(dateOfBirth).getTime(),
+    type,
+  };
 };
 
-export { signUp, signIn, forgotPassword, uploadImage, createProfile };
+type updateUserProfile = (
+  name: string,
+  photoUrl: string,
+  dateOfBirth: Date,
+  type: string
+) => Promise<void>;
+
+const updateUserProfile = async (
+  name: string,
+  profilePic: string,
+  dateOfBirth: Date,
+  type: string
+) => {
+  const currentUser = auth.currentUser;
+
+  const ref = doc(db, "users", currentUser.uid);
+  if (profilePic) {
+    profilePic = await uploadImage(`profile/${currentUser.uid}`, profilePic);
+    await updateProfile(currentUser, {
+      displayName: name,
+      photoURL: profilePic,
+    });
+  } else {
+    await updateProfile(currentUser, {
+      displayName: name,
+    });
+  }
+  await updateDoc(ref, {
+    name,
+    profilePic,
+    dateOfBirth: new Date(dateOfBirth).getTime(),
+    type,
+  });
+  return {
+    email: currentUser.email,
+    name,
+    profilePic,
+    dateOfBirth: new Date(dateOfBirth).getTime(),
+    type,
+  };
+};
+
+export {
+  signUp,
+  signIn,
+  forgotPassword,
+  uploadImage,
+  createProfile,
+  updateUserProfile,
+};

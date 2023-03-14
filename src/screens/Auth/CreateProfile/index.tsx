@@ -30,7 +30,7 @@ import {
 } from "../../../config/firebase/functions";
 
 const profileValidationSchema = yup.object().shape({
-  photoUrl: yup.string().required("Profile Picture is Required"),
+  profilePic: yup.string().required("Profile Picture is Required"),
   dateOfBirth: yup
     .date()
     .required("Date of Birth is Required")
@@ -56,7 +56,7 @@ const profileValidationSchema = yup.object().shape({
 });
 
 type values = {
-  photoUrl: string;
+  profilePic: string;
   dateOfBirth: any;
   name: string;
   type: string;
@@ -72,7 +72,7 @@ const CreateProfile = ({ navigation }) => {
     try {
       await createProfile(
         values.name,
-        values.photoUrl,
+        values.profilePic,
         values.dateOfBirth,
         values.type
       );
@@ -88,7 +88,7 @@ const CreateProfile = ({ navigation }) => {
     <ScreenWrapper>
       <Formik
         initialValues={{
-          photoUrl: "",
+          profilePic: "",
           dateOfBirth: "",
           name: "",
           type: "student",
@@ -117,11 +117,11 @@ const CreateProfile = ({ navigation }) => {
               <Text style={styles.title}>Create Profile</Text>
             </View>
             <ImagePicker
-              imageUri={values.photoUrl}
-              setImageUri={(uri) => setFieldValue("photoUrl", uri)}
-              onBlur={() => setFieldTouched("photoUrl")}
-              touched={touched.photoUrl}
-              error={errors.photoUrl}
+              imageUri={values.profilePic}
+              setImageUri={(uri) => setFieldValue("profilePic", uri)}
+              onBlur={() => setFieldTouched("profilePic")}
+              touched={touched.profilePic}
+              error={errors.profilePic}
             />
             <View>
               <CustomTextInput
@@ -203,6 +203,9 @@ const CreateProfile = ({ navigation }) => {
               disabled={isSubmitting || !isValid}
               loading={isSubmitting}
               text="Create Profile"
+              btnContainerStyle={{
+                marginTop: 20,
+              }}
             />
           </ScrollView>
         )}

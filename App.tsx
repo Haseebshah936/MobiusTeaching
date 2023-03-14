@@ -12,8 +12,9 @@ import CreateProfileStack from "./src/navigation/CreateProfileStack";
 import { Loading } from "./src/screens/Auth";
 import * as SecureStore from "expo-secure-store";
 import { signIn } from "./src/config/firebase/functions";
+import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 
-export default function App() {
+const App = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -25,10 +26,14 @@ export default function App() {
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    console.log("🚀 ~ file: App.tsx:29 ~ getUserAuth ~ user", user);
+  }, [user]);
+
   const getUserAuth = async () => {
     try {
       const auth = await SecureStore.getItemAsync("auth");
-      console.log("🚀 ~ file: App.tsx:43 ~ getUserAuth ~ auth", auth);
+      console.log("🚀 ~ file: App.tsx:35 ~ getUserAuth ~ auth", auth);
       if (auth) {
         const { email, password } = JSON.parse(auth);
         await signIn(email, password);
@@ -93,7 +98,9 @@ export default function App() {
       </CustomContextProvider>
     </NavigationContainer>
   );
-}
+};
+
+export default gestureHandlerRootHOC(App);
 
 const styles = StyleSheet.create({
   container: {
