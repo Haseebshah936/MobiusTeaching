@@ -9,7 +9,7 @@ type ClassItemProps = {
 };
 
 const ClassItem = ({ item, onPress }: ClassItemProps) => {
-  const { name, teacher, image } = item;
+  const { name, students, image } = item;
   return (
     <ProfileDetailsCard
       title={name}
@@ -21,7 +21,7 @@ const ClassItem = ({ item, onPress }: ClassItemProps) => {
             marginTop: 5,
           }}
         >
-          Teacher: {teacher}
+          Students: {students}
         </Text>
       }
       onButtonPress={onPress}

@@ -1,5 +1,6 @@
 import {
   Image,
+  RefreshControl,
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
@@ -15,82 +16,40 @@ import {
   CustomIconButton,
   CustomModal,
   CustomTextInput,
+  EmptyList,
   TextInputModalBody,
 } from "../../../components";
 import ClassItem from "./ClassItem";
 import { ModalizeProps } from "react-native-modalize";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  query,
+  serverTimestamp,
+  where,
+} from "firebase/firestore";
+import { auth, db } from "../../../config/firebase";
+import { Alert } from "react-native";
 
 interface Class {
-  id: number;
+  id: string;
   name: string;
-  teacher: string;
   students: number;
   image: string;
+  description: string;
+  creatorId: string;
 }
-
-const data: Class[] = [
-  {
-    id: 1,
-    name: "Class 1",
-    teacher: "Teacher 1",
-    students: 10,
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: 2,
-    name: "Class 2",
-    teacher: "Teacher 2",
-    students: 10,
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: 3,
-    name: "Class 3",
-    teacher: "Teacher 3",
-    students: 10,
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: 4,
-    name: "Class 4",
-    teacher: "Teacher 4",
-    students: 10,
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: 5,
-    name: "Class 5",
-    teacher: "Teacher 5",
-    students: 10,
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: 6,
-    name: "Class 6",
-    teacher: "Teacher 6",
-    students: 10,
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: 7,
-    name: "Class 7",
-    teacher: "Teacher 7",
-    students: 10,
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: 8,
-    name: "Class 8",
-    teacher: "Teacher 8",
-    students: 10,
-    image: "https://picsum.photos/200/300",
-  },
-];
 
 const Classes = ({ navigation }) => {
   const { user } = useCustomContext();
   const [search, setSearch] = useState("");
   const [classes, setClasses] = useState<Class[]>([]);
+  const [isLoading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [joinClassCode, setJoinClassCode] = useState("");
   const [joiningClass, setJoiningClass] = useState(false);
   const classesDataRef = useRef<Class[]>();
@@ -121,13 +80,72 @@ const Classes = ({ navigation }) => {
   }, [user]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setClasses(data);
-      classesDataRef.current = data;
-    }, 1000);
-  }, []);
+    setLoading(true);
 
-  const handleSearch = (text) => {
+    let subscribe: () => void;
+    try {
+      subscribe =
+        user.type === "teacher"
+          ? getClassesForTeacher()
+          : getClassesForStudent();
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong. Please try again later.");
+    }
+    return subscribe;
+  }, [refreshing, user.type]);
+
+  const getClassesForTeacher = () => {
+    const uid = auth.currentUser.uid;
+    const q = query(collection(db, "classes"), where("creatorId", "==", uid));
+    return onSnapshot(q, (querySnapshot) => {
+      const classes: Class[] = [];
+      querySnapshot.forEach((doc) => {
+        classes.push({
+          id: doc.id,
+          name: doc.data().name,
+          students: doc.data().students,
+          image: doc.data().image,
+          description: doc.data().description,
+          creatorId: doc.data().creatorId,
+        });
+      });
+      setLoading(false);
+      setClasses(classes);
+      classesDataRef.current = classes;
+    });
+  };
+
+  const getClassesForStudent = () => {
+    const uid = auth.currentUser.uid;
+    const q = query(
+      collection(db, "participants"),
+      where("participantId", "==", uid)
+    );
+    return onSnapshot(q, async (querySnapshot) => {
+      const classes: Class[] = [];
+      const promise = [];
+      querySnapshot.forEach((participant) => {
+        const docRef = doc(db, "classes", participant.data().classId);
+        promise.push(getDoc(docRef));
+      });
+      const docs = await Promise.all(promise);
+      docs.forEach((doc) => {
+        classes.push({
+          id: doc.id,
+          name: doc.data().name,
+          students: doc.data().students,
+          image: doc.data().image,
+          description: doc.data().description,
+          creatorId: doc.data().creatorId,
+        });
+      });
+      setLoading(false);
+      setClasses(classes);
+      classesDataRef.current = classes;
+    });
+  };
+
+  const handleSearch = (text: string) => {
     setSearch(text);
     if (!text) {
       return setClasses(classesDataRef.current);
@@ -139,12 +157,51 @@ const Classes = ({ navigation }) => {
     );
   };
 
-  const handleJoinClass = () => {
+  const handleJoinClass = async (joinClassCode: string) => {
     setJoiningClass(true);
-    setTimeout(() => {
+    try {
+      // Check if class exists
+      const classRef = doc(db, "classes", joinClassCode);
+      const classSnapshot = await getDoc(classRef);
+      if (!classSnapshot.exists()) {
+        Alert.alert("Join Class Error", "No class found with this code.");
+        setJoiningClass(false);
+        return joinClassModalRef.current?.close();
+      }
+
+      // Check if user is already a member of the class
+      const ref = collection(db, "participants");
+      const q = query(
+        ref,
+        where("classId", "==", joinClassCode),
+        where("participantId", "==", auth.currentUser.uid)
+      );
+      const querySnapshot = await getDocs(q);
+
+      // If user is not a member of the class, add them to the class
+      if (querySnapshot.empty) {
+        await addDoc(ref, {
+          participantId: auth.currentUser.uid,
+          classId: joinClassCode,
+          createdAt: serverTimestamp(),
+        });
+        setJoinClassCode("");
+      } else {
+        Alert.alert(
+          "Join Class Error",
+          "You are already a member of this class."
+        );
+      }
       setJoiningClass(false);
       joinClassModalRef.current?.close();
-    }, 1000);
+    } catch (error) {
+      Alert.alert(
+        "Join Class Error",
+        "Something went wrong. Please try again."
+      );
+      setJoiningClass(false);
+      joinClassModalRef.current?.close();
+    }
   };
 
   return (
@@ -178,20 +235,29 @@ const Classes = ({ navigation }) => {
             }
           />
         )}
+        ListEmptyComponent={<EmptyList loading={isLoading} />}
         estimatedItemSize={100}
         extraData={1}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={() => setRefreshing(!refreshing)}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
+          />
+        }
       />
       <CustomModal modalRef={joinClassModalRef}>
         <TextInputModalBody
           title="Join Class"
-          details="Enter the class code to join the class"
+          details="Enter class code to join the class. You can ask your teacher for the class code."
           placeholder="Enter class code"
           buttonText="Join"
           onChangeText={setJoinClassCode}
           value={joinClassCode}
           btnDisabled={!joinClassCode}
           loading={joiningClass}
-          onPressBtn={handleJoinClass}
+          onPressBtn={() => handleJoinClass(joinClassCode)}
         />
       </CustomModal>
     </View>

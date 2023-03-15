@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView, Alert } from "react-native";
 import React from "react";
 import * as yup from "yup";
 import { Formik } from "formik";
@@ -9,6 +9,9 @@ import {
   ImagePicker,
 } from "../../../components";
 import colors from "../../../utils/colors";
+import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db } from "../../../config/firebase";
+import { uploadImage } from "../../../config/firebase/functions";
 
 const createClassValidationSchema = yup.object().shape({
   image: yup.string().required("Profile Picture is Required"),
@@ -29,20 +32,21 @@ const CreateClass = ({ navigation }) => {
     setFieldError?: any
   ) => {
     try {
-      // await updateUserProfile(
-      //   values.name,
-      //   values.image === user?.image ? "" : values.image,
-      //   values.type
-      // );
-      // setUser({ ...user, ...values });
+      const ref = doc(collection(db, "classes"));
+      const image = await uploadImage(`classes/${ref.id}`, values.image);
+      await setDoc(ref, {
+        name: values.name,
+        description: values.description,
+        image,
+        createdAt: serverTimestamp(),
+        creatorId: auth.currentUser.uid,
+        students: 0,
+      });
       setSubmitting(false);
       navigation.goBack();
     } catch (error) {
       setSubmitting(false);
-      console.log(
-        "🚀 ~ file: index.tsx ~ line 100 ~ handleCreateClass ~ error",
-        error
-      );
+      Alert.alert("Error", "Something went wrong. Please try again later.");
     }
   };
 

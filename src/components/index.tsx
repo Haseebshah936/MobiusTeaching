@@ -7,6 +7,7 @@ import CustomModal from "./CustomModal";
 import ConfirmationModalBody from "./ConfirmationModalBody";
 import CustomIconButton from "./CustomIconButton";
 import TextInputModalBody from "./TextInputModalBody";
+import EmptyList from "./EmptyList";
 
 export {
   ScreenWrapper,
@@ -18,4 +19,5 @@ export {
   ConfirmationModalBody,
   CustomIconButton,
   TextInputModalBody,
+  EmptyList,
 };
