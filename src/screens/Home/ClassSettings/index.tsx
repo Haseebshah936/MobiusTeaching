@@ -9,11 +9,16 @@ import {
   ImagePicker,
 } from "../../../components";
 import colors from "../../../utils/colors";
-import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { auth, db } from "../../../config/firebase";
 import { uploadImage } from "../../../config/firebase/functions";
 
-const createClassValidationSchema = yup.object().shape({
+const classSettingsValidationSchema = yup.object().shape({
   image: yup.string().required("Profile Picture is Required"),
   name: yup.string().required("Name is Required"),
   description: yup.string(),
@@ -25,32 +30,31 @@ type values = {
   description: string;
 };
 
-const CreateClass = ({ navigation }) => {
-  const handleCreateClass = async (
+const ClassSettings = ({ navigation, route }) => {
+  const { item } = route.params || {};
+  const handleClassSettings = async (
     values?: values,
     setSubmitting?: any,
     setFieldError?: any
   ) => {
     try {
-      const ref = doc(collection(db, "classes"));
-      const image = await uploadImage(`classes/${ref.id}`, values.image);
-      await setDoc(ref, {
+      const ref = doc(db, "classes", item.id);
+      const image =
+        values.image === item.image
+          ? values.image
+          : await uploadImage(`classes/${ref.id}`, values.image);
+      await updateDoc(ref, {
         name: values.name,
         description: values.description,
         image,
-        createdAt: serverTimestamp(),
-        creatorId: auth.currentUser.uid,
-        students: 0,
       });
       setSubmitting(false);
-      navigation.navigate("Classes", {
-        newClass: {
+      navigation.navigate("Class", {
+        item: {
           id: ref.id,
           name: values.name,
           description: values.description,
           image,
-          creatorId: auth.currentUser.uid,
-          students: 0,
         },
       });
     } catch (error) {
@@ -64,13 +68,13 @@ const CreateClass = ({ navigation }) => {
     <View style={styles.container}>
       <Formik
         initialValues={{
-          image: "",
-          name: "",
-          description: "",
+          image: item.image,
+          name: item.name,
+          description: item.description,
         }}
-        validationSchema={createClassValidationSchema}
+        validationSchema={classSettingsValidationSchema}
         onSubmit={(values, { setSubmitting, setFieldError }) => {
-          handleCreateClass(values, setSubmitting, setFieldError);
+          handleClassSettings(values, setSubmitting, setFieldError);
         }}
       >
         {({
@@ -128,7 +132,7 @@ const CreateClass = ({ navigation }) => {
               onPress={handleSubmit}
               disabled={isSubmitting || !isValid}
               loading={isSubmitting}
-              text="Create Class"
+              text="Update Class"
               btnContainerStyle={{
                 marginTop: 20,
               }}
@@ -140,7 +144,7 @@ const CreateClass = ({ navigation }) => {
   );
 };
 
-export default CreateClass;
+export default ClassSettings;
 
 const styles = StyleSheet.create({
   container: {

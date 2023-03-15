@@ -7,13 +7,14 @@ interface TextInputModalBodyProps {
   title: string;
   details: string;
   value: string;
-  onChangeText: (text: string) => void;
+  onChangeText?: (text: string) => void;
   placeholder: string;
   onPressBtn: () => void;
-  loading: boolean;
+  loading?: boolean;
   secureTextEntry?: TextInputProps["secureTextEntry"];
-  buttonText: string;
-  btnDisabled: boolean;
+  editable?: boolean;
+  buttonText?: string;
+  btnDisabled?: boolean;
 }
 
 const TextInputModalBody = ({
@@ -24,6 +25,7 @@ const TextInputModalBody = ({
   placeholder,
   onPressBtn,
   secureTextEntry,
+  editable,
   loading,
   buttonText,
   btnDisabled,
@@ -39,6 +41,7 @@ const TextInputModalBody = ({
         inputStyle={styles.inputStyle}
         autoFocus={true}
         secureTextEntry={secureTextEntry}
+        editable={editable}
       />
       <CustomButton
         text={buttonText}

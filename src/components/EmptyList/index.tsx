@@ -25,26 +25,26 @@ const EmptyList = ({ loading = false }: EmptyListProps) => {
         paddingTop: 20,
       }}
     >
-      {/* {loading  ? (
+      {loading ? (
         <ActivityIndicator size="large" color={colors.primary} />
-      ) : ( */}
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          flex: 1,
-          height: height / 2,
-        }}
-      >
-        <Image
+      ) : (
+        <View
           style={{
-            height: 250,
-            width: 250,
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 1,
+            height: height / 2,
           }}
-          source={require("../../assets/Images/noData.png")}
-        />
-      </View>
-      {/* )} */}
+        >
+          <Image
+            style={{
+              height: 250,
+              width: 250,
+            }}
+            source={require("../../assets/Images/noData.png")}
+          />
+        </View>
+      )}
     </View>
   );
 };

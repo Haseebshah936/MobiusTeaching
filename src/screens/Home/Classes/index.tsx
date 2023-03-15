@@ -9,6 +9,23 @@ import {
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  increment,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { Alert } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import * as Clipboard from "expo-clipboard";
 
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import colors from "../../../utils/colors";
@@ -20,20 +37,7 @@ import {
   TextInputModalBody,
 } from "../../../components";
 import ClassItem from "./ClassItem";
-import { ModalizeProps } from "react-native-modalize";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  query,
-  serverTimestamp,
-  where,
-} from "firebase/firestore";
 import { auth, db } from "../../../config/firebase";
-import { Alert } from "react-native";
 
 interface Class {
   id: string;
@@ -44,17 +48,26 @@ interface Class {
   creatorId: string;
 }
 
-const Classes = ({ navigation }) => {
+const Classes = ({ navigation, route }) => {
+  let { newClass } = route.params || {};
   const { user } = useCustomContext();
-  const [search, setSearch] = useState("");
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [isLoading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [joinClassCode, setJoinClassCode] = useState("");
-  const [joiningClass, setJoiningClass] = useState(false);
+  const [state, setState] = useState({
+    search: "",
+    classes: [],
+    isLoading: true,
+    refreshing: false,
+    reloading: false,
+    joinClassCode: "",
+    joiningClass: false,
+    newClassCode: "",
+    copyingCode: false,
+  });
   const classesDataRef = useRef<Class[]>();
   const joinClassModalRef = useRef(null);
+  const copyCodeModalRef = useRef(null);
+  const isFocused = useIsFocused();
 
+  // Set header with profile pic and plus button
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -79,24 +92,46 @@ const Classes = ({ navigation }) => {
     });
   }, [user]);
 
+  // Get classes for teacher or student
   useEffect(() => {
-    setLoading(true);
-
-    let subscribe: () => void;
+    let unsubscribe: any;
     try {
-      subscribe =
+      unsubscribe =
         user.type === "teacher"
           ? getClassesForTeacher()
           : getClassesForStudent();
     } catch (error) {
       Alert.alert("Error", "Something went wrong. Please try again later.");
+      handleStateChange("isLoading", false);
+      handleStateChange("refreshing", false);
+      console.log(error);
     }
-    return subscribe;
-  }, [refreshing, user.type]);
+    return () => unsubscribe();
+  }, [state.reloading, user.type]);
 
+  // Get new class from CreateClass screen
+  useEffect(() => {
+    if (newClass) {
+      // handleStateChange("classes", [newClass, ...state.classes]);
+      // classesDataRef.current = [newClass, ...classesDataRef.current];
+      handleStateChange("newClassCode", newClass.id);
+      copyCodeModalRef.current?.open();
+      navigation.setParams({ newClass: null });
+    }
+  }, [isFocused]);
+
+  const handleStateChange = (key: string, value: any) => {
+    setState((prev) => ({ ...prev, [key]: value }));
+  };
+
+  //  Get classes for teacher
   const getClassesForTeacher = () => {
     const uid = auth.currentUser.uid;
-    const q = query(collection(db, "classes"), where("creatorId", "==", uid));
+    const q = query(
+      collection(db, "classes"),
+      where("creatorId", "==", uid),
+      orderBy("createdAt", "desc")
+    );
     return onSnapshot(q, (querySnapshot) => {
       const classes: Class[] = [];
       querySnapshot.forEach((doc) => {
@@ -109,17 +144,20 @@ const Classes = ({ navigation }) => {
           creatorId: doc.data().creatorId,
         });
       });
-      setLoading(false);
-      setClasses(classes);
+      handleStateChange("isLoading", false);
+      handleStateChange("refreshing", false);
+      handleStateChange("classes", classes);
       classesDataRef.current = classes;
     });
   };
 
+  // Get classes for student
   const getClassesForStudent = () => {
     const uid = auth.currentUser.uid;
     const q = query(
       collection(db, "participants"),
-      where("participantId", "==", uid)
+      where("participantId", "==", uid),
+      orderBy("createdAt", "desc")
     );
     return onSnapshot(q, async (querySnapshot) => {
       const classes: Class[] = [];
@@ -139,33 +177,37 @@ const Classes = ({ navigation }) => {
           creatorId: doc.data().creatorId,
         });
       });
-      setLoading(false);
-      setClasses(classes);
+      handleStateChange("isLoading", false);
+      handleStateChange("refreshing", false);
+      handleStateChange("classes", classes);
       classesDataRef.current = classes;
     });
   };
 
+  // Search classes by name
   const handleSearch = (text: string) => {
-    setSearch(text);
+    handleStateChange("search", text);
     if (!text) {
-      return setClasses(classesDataRef.current);
+      return handleStateChange("classes", classesDataRef.current);
     }
-    setClasses(
+    handleStateChange(
+      "classes",
       classesDataRef.current.filter((item) =>
         item.name.toLowerCase().includes(text.toLowerCase())
       )
     );
   };
 
+  // Join class by code (student)
   const handleJoinClass = async (joinClassCode: string) => {
-    setJoiningClass(true);
+    handleStateChange("joiningClass", true);
     try {
       // Check if class exists
       const classRef = doc(db, "classes", joinClassCode);
       const classSnapshot = await getDoc(classRef);
       if (!classSnapshot.exists()) {
-        Alert.alert("Join Class Error", "No class found with this code.");
-        setJoiningClass(false);
+        Alert.alert("Error", "No class found with this code.");
+        handleStateChange("joiningClass", false);
         return joinClassModalRef.current?.close();
       }
 
@@ -185,29 +227,44 @@ const Classes = ({ navigation }) => {
           classId: joinClassCode,
           createdAt: serverTimestamp(),
         });
-        setJoinClassCode("");
+        await updateDoc(classRef, {
+          students: increment(1),
+        });
+        handleStateChange("classes", [
+          {
+            id: joinClassCode,
+            name: classSnapshot.data().name,
+            students: classSnapshot.data().students + 1,
+            image: classSnapshot.data().image,
+            description: classSnapshot.data().description,
+            creatorId: classSnapshot.data().creatorId,
+          },
+          ...state.classes,
+        ]);
+        handleStateChange("joinClassCode", "");
       } else {
-        Alert.alert(
-          "Join Class Error",
-          "You are already a member of this class."
-        );
+        Alert.alert("Join Class", "You are already a member of this class.");
       }
-      setJoiningClass(false);
+      handleStateChange("joiningClass", false);
       joinClassModalRef.current?.close();
     } catch (error) {
-      Alert.alert(
-        "Join Class Error",
-        "Something went wrong. Please try again."
-      );
-      setJoiningClass(false);
+      Alert.alert("Error", "Something went wrong. Please try again.");
+      handleStateChange("joiningClass", false);
       joinClassModalRef.current?.close();
     }
+  };
+
+  const copyToClipboard = async () => {
+    handleStateChange("copyingCode", true);
+    await Clipboard.setStringAsync(state.newClassCode);
+    handleStateChange("copyingCode", false);
+    copyCodeModalRef.current?.close();
   };
 
   return (
     <View style={styles.container}>
       <FlashList
-        data={classes}
+        data={state.classes}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -216,7 +273,7 @@ const Classes = ({ navigation }) => {
         ListHeaderComponent={
           <CustomTextInput
             placeholder="Search by class name"
-            value={search}
+            value={state.search}
             onChangeText={handleSearch}
             iconLeft={<AntDesign name="search1" size={24} color="black" />}
             containerStyle={styles.searchContainer}
@@ -235,13 +292,16 @@ const Classes = ({ navigation }) => {
             }
           />
         )}
-        ListEmptyComponent={<EmptyList loading={isLoading} />}
+        ListEmptyComponent={<EmptyList loading={state.isLoading} />}
         estimatedItemSize={100}
         extraData={1}
         refreshControl={
           <RefreshControl
-            refreshing={isLoading}
-            onRefresh={() => setRefreshing(!refreshing)}
+            refreshing={state.refreshing}
+            onRefresh={() => {
+              handleStateChange("refreshing", true);
+              handleStateChange("reloading", !state.reloading);
+            }}
             colors={[colors.primary]}
             tintColor={colors.primary}
           />
@@ -253,11 +313,22 @@ const Classes = ({ navigation }) => {
           details="Enter class code to join the class. You can ask your teacher for the class code."
           placeholder="Enter class code"
           buttonText="Join"
-          onChangeText={setJoinClassCode}
-          value={joinClassCode}
-          btnDisabled={!joinClassCode}
-          loading={joiningClass}
-          onPressBtn={() => handleJoinClass(joinClassCode)}
+          onChangeText={(text) => handleStateChange("joinClassCode", text)}
+          value={state.joinClassCode}
+          btnDisabled={!state.joinClassCode}
+          loading={state.joiningClass}
+          onPressBtn={() => handleJoinClass(state.joinClassCode)}
+        />
+      </CustomModal>
+      <CustomModal modalRef={copyCodeModalRef}>
+        <TextInputModalBody
+          title="Class Code"
+          details="Share this code with your students to let them join your class."
+          placeholder=""
+          buttonText="Copy Code"
+          editable={false}
+          value={state.newClassCode}
+          onPressBtn={copyToClipboard}
         />
       </CustomModal>
     </View>
