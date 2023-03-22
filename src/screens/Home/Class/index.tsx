@@ -1,5 +1,5 @@
 import { Platform, StyleSheet, Text, View } from "react-native";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Fontisto, Feather, AntDesign } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 
@@ -11,6 +11,14 @@ import {
 } from "../../../components";
 import colors from "../../../utils/colors";
 import { useCustomContext } from "../../../hooks/useCustomContext";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "../../../config/firebase";
 
 const Class = ({ navigation, route }) => {
   const { item } = route.params;
@@ -49,7 +57,9 @@ const Class = ({ navigation, route }) => {
             </CustomIconButton>
             <CustomIconButton
               onPress={() => {
-                navigation.navigate("Create Announcement");
+                navigation.navigate("Create Announcement", {
+                  item,
+                });
               }}
             >
               <AntDesign name="plus" size={18} color={colors.black} />
@@ -62,6 +72,28 @@ const Class = ({ navigation, route }) => {
         ),
     });
   }, [item]);
+
+  useEffect(() => {
+    const ref = collection(db, "announcements");
+    const q = query(
+      ref,
+      where("classId", "==", item.id),
+      orderBy("createdAt", "desc")
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const announcements = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log(
+        "🚀 ~ file: index.tsx:88 ~ announcements ~ announcements:",
+        announcements
+      );
+
+      // setState((prev) => ({ ...prev, announcements }));
+    });
+    return unsubscribe;
+  }, []);
 
   const handleStateChange = (key: string, value: any) => {
     setState((prev) => ({ ...prev, [key]: value }));

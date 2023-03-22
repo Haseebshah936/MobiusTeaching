@@ -7,7 +7,7 @@ import {
   CustomButton,
   CustomTextInput,
   ImagePicker,
-  ScreenWrapper,
+  OptionPicker,
 } from "../../../components";
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import { createProfile } from "../../../config/firebase/functions";
@@ -131,55 +131,13 @@ const CreateProfile = ({ navigation }) => {
                 touched={touched.dateOfBirth}
                 error={errors.dateOfBirth}
               />
-              <View style={styles.typeContainer}>
-                <Text style={{ color: colors.black, fontSize: 16 }}>
-                  {"I am a"}
-                </Text>
-                <View style={styles.btnWrapper}>
-                  <CustomButton
-                    onPress={() => setFieldValue("type", "student")}
-                    text="Student"
-                    btnContainerStyle={[
-                      styles.btnContainer,
-                      {
-                        backgroundColor:
-                          values.type === "student"
-                            ? colors.primary
-                            : colors.white,
-                      },
-                    ]}
-                    styleBtn={styles.btn}
-                    styleText={{
-                      textTransform: null,
-                      color:
-                        values.type === "teacher"
-                          ? colors.primary
-                          : colors.white,
-                    }}
-                  />
-                  <CustomButton
-                    onPress={() => setFieldValue("type", "teacher")}
-                    text="Teacher"
-                    btnContainerStyle={[
-                      styles.btnContainer,
-                      {
-                        backgroundColor:
-                          values.type === "teacher"
-                            ? colors.primary
-                            : colors.white,
-                      },
-                    ]}
-                    styleBtn={styles.btn}
-                    styleText={{
-                      textTransform: null,
-                      color:
-                        values.type === "student"
-                          ? colors.primary
-                          : colors.white,
-                    }}
-                  />
-                </View>
-              </View>
+              <OptionPicker
+                label="I am a"
+                option1="student"
+                option2="teacher"
+                value={values.type}
+                onChange={(value) => setFieldValue("type", value)}
+              />
             </View>
             <CustomButton
               onPress={handleSubmit}

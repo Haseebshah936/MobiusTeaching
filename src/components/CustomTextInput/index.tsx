@@ -24,6 +24,7 @@ type CustomTextInputProps = TextInputProps & {
   value?: string | any;
   label?: string;
   isDateInput?: boolean;
+  dateMode?: "date" | "time" | "datetime";
   containerStyle?: StyleProp<ViewProps> | any;
   inputContainerStyle?: StyleProp<ViewProps> | any;
   inputStyle?: StyleProp<ViewProps> | any;
@@ -51,6 +52,7 @@ const CustomTextInput = ({
   value,
   label,
   isDateInput = false,
+  dateMode = "date",
   containerStyle,
   inputContainerStyle,
   inputStyle,
@@ -165,7 +167,7 @@ const CustomTextInput = ({
       )}
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
-        mode="date"
+        mode={dateMode}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
         date={new Date(value ? value : Date.now())}

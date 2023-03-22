@@ -14,6 +14,7 @@ import {
   CustomButton,
   CustomTextInput,
   ImagePicker,
+  OptionPicker,
 } from "../../../components";
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import { updateUserProfile } from "../../../config/firebase/functions";
@@ -141,51 +142,13 @@ const EditProfile = ({ navigation }) => {
               touched={touched.dateOfBirth as boolean}
               error={errors.dateOfBirth as string}
             />
-            {/* <View style={styles.typeContainer}>
-              <Text style={{ color: colors.black, fontSize: 16 }}>
-                {"I am a"}
-              </Text>
-              <View style={styles.btnWrapper}>
-                <CustomButton
-                  onPress={() => setFieldValue("type", "student")}
-                  text="Student"
-                  btnContainerStyle={[
-                    styles.btnContainer,
-                    {
-                      backgroundColor:
-                        values.type === "student"
-                          ? colors.primary
-                          : colors.white,
-                    },
-                  ]}
-                  styleBtn={styles.btn}
-                  styleText={{
-                    textTransform: null,
-                    color:
-                      values.type === "teacher" ? colors.primary : colors.white,
-                  }}
-                />
-                <CustomButton
-                  onPress={() => setFieldValue("type", "teacher")}
-                  text="Teacher"
-                  btnContainerStyle={[
-                    styles.btnContainer,
-                    {
-                      backgroundColor:
-                        values.type === "teacher"
-                          ? colors.primary
-                          : colors.white,
-                    },
-                  ]}
-                  styleBtn={styles.btn}
-                  styleText={{
-                    textTransform: null,
-                    color:
-                      values.type === "student" ? colors.primary : colors.white,
-                  }}
-                />
-              </View>
-            </View> */}
+            <OptionPicker
+              label="I am a"
+              option1="student"
+              option2="teacher"
+              value={values.type}
+              onChange={(value) => setFieldValue("type", value)}
+            />
             <CustomButton
               onPress={handleSubmit}
               disabled={isSubmitting || !isValid}
@@ -213,27 +176,5 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     flexGrow: 1,
     backgroundColor: colors.white,
-  },
-  typeContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  btnWrapper: {
-    flexDirection: "row",
-    columnGap: 10,
-  },
-  btnContainer: {
-    justifyContent: "center",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  btn: {
-    marginVertical: 0,
-    paddingVertical: 5,
-    backgroundColor: "transparent",
   },
 });

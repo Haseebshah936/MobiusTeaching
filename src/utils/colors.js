@@ -4,5 +4,7 @@ export default {
   white: "#ffffff",
   grey: "#f5f5f5",
   lightGrey: "rgba(0, 0, 0, 0.1)",
-  danger: "red"
+  danger: "red",
+  pdfSelectorBg: "#F5F3FE",
+  placeholder: "rgba(0,0,0,0.2)",
 };

@@ -8,6 +8,8 @@ import ConfirmationModalBody from "./ConfirmationModalBody";
 import CustomIconButton from "./CustomIconButton";
 import TextInputModalBody from "./TextInputModalBody";
 import EmptyList from "./EmptyList";
+import OptionPicker from "./OptionPicker";
+import AttachmentSellectedButton from "./AttachmentSellectedButton";
 
 export {
   ScreenWrapper,
@@ -20,4 +22,6 @@ export {
   CustomIconButton,
   TextInputModalBody,
   EmptyList,
+  OptionPicker,
+  AttachmentSellectedButton,
 };

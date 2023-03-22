@@ -68,6 +68,19 @@ const uploadImage = async (imageReferenceID: any, uri: any) => {
   return null;
 };
 
+type uploadData = (dataReferenceID: any, uri: any) => Promise<void>;
+
+const uploadData = async (dataReferenceID: any, uri: any) => {
+  if (uri) {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const storageRef = ref(storage, dataReferenceID);
+    await uploadBytes(storageRef, blob);
+    return getDownloadURL(storageRef);
+  }
+  return null;
+};
+
 type createProfile = (
   name: string,
   photoUrl: string,
@@ -196,4 +209,5 @@ export {
   changePassword,
   changeEmail,
   deleteAccount,
+  uploadData,
 };
