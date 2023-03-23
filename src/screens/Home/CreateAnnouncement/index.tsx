@@ -75,19 +75,22 @@ type values = {
   expiresAt: Date;
 };
 
-const CreateAnnouncment = ({ navigation, route }) => {
+const CreateAnnouncement = ({ navigation, route }) => {
   const attachmentModalRef = useRef(null);
 
-  const handleCreateAnnouncment = async (
+  const handleCreateAnnouncement = async (
     values?: values,
     setSubmitting?: any,
     setFieldError?: any
   ) => {
     try {
-      const ref = doc(collection(db, "announcments"));
+      const ref = doc(collection(db, "announcements"));
       let uri = "";
       if (values.attachment.name && values.attachment.uri)
-        uri = await uploadData(`announcments/${ref.id}`, values.attachment.uri);
+        uri = await uploadData(
+          `announcements/${ref.id}`,
+          values.attachment.uri
+        );
       await setDoc(ref, {
         title: values.title,
         description: values.description,
@@ -170,7 +173,7 @@ const CreateAnnouncment = ({ navigation, route }) => {
       }}
       validationSchema={createAnnouncmentValidationSchema}
       onSubmit={(values, { setSubmitting, setFieldError }) => {
-        handleCreateAnnouncment(values, setSubmitting, setFieldError);
+        handleCreateAnnouncement(values, setSubmitting, setFieldError);
       }}
     >
       {({
@@ -285,7 +288,7 @@ const CreateAnnouncment = ({ navigation, route }) => {
   );
 };
 
-export default CreateAnnouncment;
+export default CreateAnnouncement;
 
 const styles = StyleSheet.create({
   container: {
