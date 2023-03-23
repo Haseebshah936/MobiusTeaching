@@ -1,4 +1,4 @@
-import ScreenWrapper from "./ScreenWrapper";
+import ScreenWrapper from "./ScreenWrapper"; // Screen wrapper component to wrap all the screens with a safe area view
 import CustomButton from "./CustomButton";
 import CustomTextInput from "./CustomTextInput";
 import ImagePicker from "./ImagePicker";
