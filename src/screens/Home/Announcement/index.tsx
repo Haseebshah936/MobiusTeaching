@@ -64,7 +64,7 @@ const Announcement = ({ navigation, route }) => {
           </Hyperlink>
         </View>
         <View style={styles.attachmentContainer}>
-          <Text style={styles.heading}>Attachments</Text>
+          <Text style={styles.heading}>Attachment</Text>
         </View>
         <AttachmentSellectedButton
           date={attachment.date}
