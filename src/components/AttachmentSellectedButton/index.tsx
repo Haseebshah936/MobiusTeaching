@@ -72,7 +72,7 @@ const AttachmentSellectedButton = ({
               },
             ]}
           >
-            Upload your licence
+            Upload your attachment
           </Text>
         </>
       )}

@@ -100,6 +100,7 @@ const CreateAnnouncement = ({ navigation, route }) => {
         classId: route.params.item.id,
         createdAt: serverTimestamp(),
         creatorId: auth.currentUser.uid,
+        link: values.link,
       });
       setSubmitting(false);
       navigation.goBack();

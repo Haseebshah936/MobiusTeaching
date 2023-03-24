@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { EditProfile, Profile, Settings } from "../../screens/Profile";
 import {
   Announcement,
+  AttachmentViewer,
   Class,
   ClassSettings,
   Classes,
@@ -31,6 +32,7 @@ export default function AppNavigator() {
       <STACK.Screen name="CreateClass" component={CreateClass} />
       <STACK.Screen name="Class" component={Class} />
       <STACK.Screen name="Announcement" component={Announcement} />
+      <STACK.Screen name="AttachmentViewer" component={AttachmentViewer} />
       <STACK.Screen name="Class Settings" component={ClassSettings} />
       <STACK.Screen name="Comments" component={Comments} />
       <STACK.Screen name="Create Announcement" component={CreateAnnouncement} />

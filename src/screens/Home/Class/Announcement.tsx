@@ -65,7 +65,7 @@ const Announcement = ({
           {type === "quiz" ? "Quiz ends on: " : "Posted on: "}
           {moment(
             new Date(
-              (type === "quiz" ? expiresAt.seconds : createdAt.seconds) * 1000
+              (type === "quiz" ? expiresAt.seconds : createdAt?.seconds) * 1000
             )
           ).format("h:mm a MM-DD-YYYY")}
         </Text>
