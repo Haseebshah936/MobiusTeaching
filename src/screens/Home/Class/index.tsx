@@ -1,4 +1,11 @@
-import { Platform, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Platform,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Fontisto, Feather, AntDesign } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
@@ -14,12 +21,17 @@ import colors from "../../../utils/colors";
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import {
   collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  increment,
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
-import { db } from "../../../config/firebase";
+import { auth, db } from "../../../config/firebase";
 import { FlashList } from "@shopify/flash-list";
 import Announcement from "./Announcement";
 
@@ -30,6 +42,9 @@ const Class = ({ navigation, route }) => {
     copyingCode: false,
     loading: true,
     announcements: [],
+    leavingClass: false,
+    refreshing: false,
+    reloading: false,
   });
   const copyCodeModalRef = useRef(null);
   const confirmationModalRef = useRef(null);
@@ -90,10 +105,15 @@ const Class = ({ navigation, route }) => {
         id: doc.id,
         ...doc.data(),
       }));
-      setState((prev) => ({ ...prev, announcements, loading: false }));
+      setState((prev) => ({
+        ...prev,
+        announcements,
+        loading: false,
+        refreshing: false,
+      }));
     });
     return unsubscribe;
-  }, []);
+  }, [state.reloading]);
 
   const handleStateChange = (key: string, value: any) => {
     setState((prev) => ({ ...prev, [key]: value }));
@@ -104,6 +124,32 @@ const Class = ({ navigation, route }) => {
     await Clipboard.setStringAsync(item.id);
     handleStateChange("copyingCode", false);
     copyCodeModalRef.current?.close();
+  };
+
+  const handleClassLeave = async () => {
+    handleStateChange("leavingClass", true);
+    try {
+      const ref = collection(db, "participants");
+      const classRef = doc(db, "classes", item.id);
+      const q = query(
+        ref,
+        where("classId", "==", item.id),
+        where("participantId", "==", auth.currentUser.uid)
+      );
+      const snapshot = await getDocs(q);
+      const participant = snapshot.docs[0];
+      await updateDoc(classRef, {
+        students: increment(-1),
+      });
+      await deleteDoc(participant.ref);
+      handleStateChange("leavingClass", false);
+      confirmationModalRef.current?.close();
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+      handleStateChange("leavingClass", false);
+      Alert.alert("Error", "Something went wrong. Please try again later.");
+    }
   };
 
   return (
@@ -127,6 +173,17 @@ const Class = ({ navigation, route }) => {
         contentContainerStyle={{
           paddingVertical: 20,
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={state.refreshing}
+            onRefresh={() => {
+              handleStateChange("refreshing", true);
+              handleStateChange("reloading", !state.reloading);
+            }}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
+          />
+        }
       />
       <CustomModal modalRef={copyCodeModalRef}>
         <TextInputModalBody
@@ -146,8 +203,9 @@ const Class = ({ navigation, route }) => {
           detailsText="Are you sure you want to leave this class?"
           btn1Text="Leave Class"
           btn2Text="Cancel"
-          onPressBtn1={() => {}}
-          onPressBtn2={() => {}}
+          onPressBtn1={handleClassLeave}
+          onPressBtn2={confirmationModalRef.current?.close}
+          loading={state.leavingClass}
         />
       </CustomModal>
     </View>

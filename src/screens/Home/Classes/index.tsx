@@ -315,7 +315,7 @@ const Classes = ({ navigation, route }) => {
           buttonText="Join"
           onChangeText={(text) => handleStateChange("joinClassCode", text)}
           value={state.joinClassCode}
-          btnDisabled={!state.joinClassCode}
+          btnDisabled={!state.joinClassCode || state.joiningClass}
           loading={state.joiningClass}
           onPressBtn={() => handleJoinClass(state.joinClassCode)}
         />

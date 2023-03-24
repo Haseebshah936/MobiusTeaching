@@ -11,6 +11,8 @@ type ConfirmationModalBodyProps = {
   btn2Text: string;
   onPressBtn1: () => void;
   onPressBtn2: () => void;
+  loading?: boolean;
+  disabled?: boolean;
 };
 
 const ConfirmationModalBody = ({
@@ -20,6 +22,8 @@ const ConfirmationModalBody = ({
   btn2Text,
   onPressBtn1,
   onPressBtn2,
+  loading,
+  disabled,
 }: ConfirmationModalBodyProps) => {
   return (
     <View style={styles.container}>
@@ -27,7 +31,12 @@ const ConfirmationModalBody = ({
         <Text style={styles.title}>{title}</Text>
         {detailsText && <Text style={styles.detailsText}>{detailsText}</Text>}
       </View>
-      <CustomButton text={btn1Text} onPress={onPressBtn1} />
+      <CustomButton
+        text={btn1Text}
+        onPress={onPressBtn1}
+        loading={loading}
+        disabled={disabled || loading}
+      />
       <CustomButton
         styleBtn={styles.btnSecondary}
         styleText={styles.btnSecondaryText}
