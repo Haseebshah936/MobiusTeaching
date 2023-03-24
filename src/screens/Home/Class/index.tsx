@@ -7,6 +7,7 @@ import {
   ConfirmationModalBody,
   CustomIconButton,
   CustomModal,
+  EmptyList,
   TextInputModalBody,
 } from "../../../components";
 import colors from "../../../utils/colors";
@@ -19,12 +20,16 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../config/firebase";
+import { FlashList } from "@shopify/flash-list";
+import Announcement from "./Announcement";
 
 const Class = ({ navigation, route }) => {
   const { item } = route.params;
   const { user } = useCustomContext();
   const [state, setState] = useState({
     copyingCode: false,
+    loading: true,
+    announcements: [],
   });
   const copyCodeModalRef = useRef(null);
   const confirmationModalRef = useRef(null);
@@ -85,12 +90,7 @@ const Class = ({ navigation, route }) => {
         id: doc.id,
         ...doc.data(),
       }));
-      console.log(
-        "🚀 ~ file: index.tsx:88 ~ announcements ~ announcements:",
-        announcements
-      );
-
-      // setState((prev) => ({ ...prev, announcements }));
+      setState((prev) => ({ ...prev, announcements, loading: false }));
     });
     return unsubscribe;
   }, []);
@@ -107,8 +107,27 @@ const Class = ({ navigation, route }) => {
   };
 
   return (
-    <>
-      <Text>Class</Text>
+    <View style={styles.container}>
+      <FlashList
+        data={state.announcements}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <Announcement
+            item={item}
+            onCommentPress={() =>
+              navigation.navigate("Comments", {
+                item,
+              })
+            }
+            onPress={() => navigation.navigate("Announcement", { item })}
+          />
+        )}
+        estimatedItemSize={100}
+        ListEmptyComponent={<EmptyList loading={state.loading} />}
+        contentContainerStyle={{
+          paddingVertical: 20,
+        }}
+      />
       <CustomModal modalRef={copyCodeModalRef}>
         <TextInputModalBody
           title="Class Code"
@@ -131,10 +150,15 @@ const Class = ({ navigation, route }) => {
           onPressBtn2={() => {}}
         />
       </CustomModal>
-    </>
+    </View>
   );
 };
 
 export default Class;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+});

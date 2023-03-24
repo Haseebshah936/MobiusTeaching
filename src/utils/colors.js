@@ -7,4 +7,6 @@ export default {
   danger: "red",
   pdfSelectorBg: "#F5F3FE",
   placeholder: "rgba(0,0,0,0.2)",
+  gray: "gray",
+  lightPurple: "#D6CDFE"
 };

@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Alert,
+  SafeAreaView,
+} from "react-native";
 import React from "react";
 import * as yup from "yup";
 import { Formik } from "formik";
@@ -12,7 +19,6 @@ import {
 import { useCustomContext } from "../../../hooks/useCustomContext";
 import { createProfile } from "../../../config/firebase/functions";
 import colors from "../../../utils/colors";
-import { SafeAreaView } from "react-native";
 
 const profileValidationSchema = yup.object().shape({
   profilePic: yup.string().required("Profile Picture is Required"),

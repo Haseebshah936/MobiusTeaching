@@ -95,9 +95,7 @@ const createProfile = async (
   type: string
 ) => {
   const currentUser = auth.currentUser;
-  await updateProfile(currentUser, {
-    displayName: name,
-  });
+
   const ref = doc(db, "users", currentUser.uid);
   profilePic = await uploadImage(`profile/${currentUser.uid}`, profilePic);
   await setDoc(
@@ -112,6 +110,10 @@ const createProfile = async (
       merge: true,
     }
   );
+  await updateProfile(currentUser, {
+    displayName: name,
+    photoURL: profilePic,
+  });
   return {
     email: currentUser.email,
     name,

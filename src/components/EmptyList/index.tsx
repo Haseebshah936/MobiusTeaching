@@ -20,7 +20,6 @@ const EmptyList = ({ loading = false }: EmptyListProps) => {
   return (
     <View
       style={{
-        width,
         alignItems: "center",
         paddingTop: 20,
       }}
