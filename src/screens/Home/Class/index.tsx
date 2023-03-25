@@ -87,7 +87,7 @@ const Class = ({ navigation, route }) => {
           </View>
         ) : (
           <CustomIconButton onPress={() => confirmationModalRef.current.open()}>
-            <Feather name="log-out" size={20} color={colors.black} />
+            <Feather name="log-out" size={20} color={colors.danger} />
           </CustomIconButton>
         ),
     });

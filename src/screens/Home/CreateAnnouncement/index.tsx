@@ -135,11 +135,13 @@ const CreateAnnouncement = ({ navigation, route }) => {
       if (
         values.attachment.name &&
         values.attachment.uri !== item.attachment.uri
-      )
+      ) {
+        // const extention = values.attachment.uri.split(".").pop();
         uri = await uploadData(
           `announcements/${ref.id}`,
           values.attachment.uri
         );
+      }
       await updateDoc(ref, {
         title: values.title,
         description: values.description,

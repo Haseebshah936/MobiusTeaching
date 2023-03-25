@@ -64,6 +64,7 @@ const App = () => {
               });
               setUser({
                 email: user.email,
+                id: user.uid,
               });
             }
           })
