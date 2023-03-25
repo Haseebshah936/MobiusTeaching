@@ -22,9 +22,8 @@ const Announcement = ({
   item,
   onPress = () => {},
   onCommentPress = () => {},
-}) => {
+}: AnnouncementProps) => {
   const { title, description, type, comments, createdAt, expiresAt } = item;
-  console.log("Announcement -> expireAt", expiresAt);
   return (
     <TouchableOpacity
       style={styles.container}

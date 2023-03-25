@@ -7,8 +7,14 @@ import {
   Platform,
   Keyboard,
 } from "react-native";
-import React, { useRef } from "react";
-import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import React, { useLayoutEffect, useRef } from "react";
+import {
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import * as yup from "yup";
 import { Formik } from "formik";
 import * as DocumentPicker from "expo-document-picker";
@@ -77,6 +83,13 @@ type values = {
 
 const CreateAnnouncement = ({ navigation, route }) => {
   const attachmentModalRef = useRef(null);
+  const { item, edit } = route.params;
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: edit ? "Edit Announcement" : "Create Announcement",
+    });
+  }, []);
 
   const handleCreateAnnouncement = async (
     values?: values,
@@ -101,6 +114,40 @@ const CreateAnnouncement = ({ navigation, route }) => {
         createdAt: serverTimestamp(),
         creatorId: auth.currentUser.uid,
         link: values.link,
+      });
+      setSubmitting(false);
+      navigation.goBack();
+    } catch (error) {
+      setSubmitting(false);
+      Alert.alert("Error", "Something went wrong. Please try again later.");
+      console.log(error);
+    }
+  };
+
+  const handleEditAnnouncement = async (
+    values?: values,
+    setSubmitting?: any,
+    setFieldError?: any
+  ) => {
+    try {
+      const ref = doc(db, "announcements", item.id);
+      let uri = "";
+      if (
+        values.attachment.name &&
+        values.attachment.uri !== item.attachment.uri
+      )
+        uri = await uploadData(
+          `announcements/${ref.id}`,
+          values.attachment.uri
+        );
+      await updateDoc(ref, {
+        title: values.title,
+        description: values.description,
+        type: values.type,
+        attachment: { ...values.attachment, uri: uri || item.attachment.uri },
+        expiresAt: values.expiresAt,
+        link: values.link,
+        updatedAt: serverTimestamp(),
       });
       setSubmitting(false);
       navigation.goBack();
@@ -160,21 +207,22 @@ const CreateAnnouncement = ({ navigation, route }) => {
   return (
     <Formik
       initialValues={{
-        title: "",
-        description: "",
-        type: "info",
-        attachment: {
-          name: "",
-          uri: "",
-          type: "",
-          size: 0,
-        },
-        link: "",
-        expiresAt: new Date(),
+        title: edit ? item.title : "",
+        description: edit ? item.description : "",
+        type: edit ? item.type : "info",
+        attachment: edit
+          ? item.attachment
+          : { name: "", uri: "", type: "", size: 0 },
+        link: edit && item.type === "quiz" ? item.link : "",
+        expiresAt:
+          edit && item.type === "quiz"
+            ? new Date(item.expiresAt.seconds * 1000)
+            : new Date(),
       }}
       validationSchema={createAnnouncmentValidationSchema}
       onSubmit={(values, { setSubmitting, setFieldError }) => {
-        handleCreateAnnouncement(values, setSubmitting, setFieldError);
+        if (edit) handleEditAnnouncement(values, setSubmitting, setFieldError);
+        else handleCreateAnnouncement(values, setSubmitting, setFieldError);
       }}
     >
       {({
@@ -266,7 +314,7 @@ const CreateAnnouncement = ({ navigation, route }) => {
                 onPress={handleSubmit}
                 disabled={isSubmitting || !isValid}
                 loading={isSubmitting}
-                text="Create Announcement"
+                text={edit ? "Edit Announcement" : "Create Announcement"}
                 btnContainerStyle={{
                   marginTop: 20,
                 }}

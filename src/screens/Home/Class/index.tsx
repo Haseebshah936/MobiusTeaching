@@ -53,7 +53,7 @@ const Class = ({ navigation, route }) => {
     navigation.setOptions({
       title: item.name,
       headerRight: () =>
-        user.type === "teacher" ? (
+        user.type === "teacher" && user.id === item.creatorId ? (
           <View
             style={{
               flexDirection: "row",

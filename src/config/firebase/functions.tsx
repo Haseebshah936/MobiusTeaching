@@ -190,6 +190,7 @@ const changeEmail = async (currentPassword: string, newEmail: string) => {
 };
 
 type deleteAccount = (currentPassword: string) => Promise<void>;
+
 const deleteAccount = async (currentPassword: string) => {
   await reauthenticate(currentPassword);
   const user = auth.currentUser;

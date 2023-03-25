@@ -14,9 +14,10 @@ const { width, height } = Dimensions.get("window");
 type EmptyListProps = {
   loading?: boolean;
   refreshing?: boolean;
+  text?: string;
 };
 
-const EmptyList = ({ loading = false }: EmptyListProps) => {
+const EmptyList = ({ loading = false, text }: EmptyListProps) => {
   return (
     <View
       style={{
@@ -42,6 +43,7 @@ const EmptyList = ({ loading = false }: EmptyListProps) => {
             }}
             source={require("../../assets/Images/noData.png")}
           />
+          <Text style={styles.text}>{text}</Text>
         </View>
       )}
     </View>
@@ -50,4 +52,12 @@ const EmptyList = ({ loading = false }: EmptyListProps) => {
 
 export default EmptyList;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 16,
+    color: colors.black,
+    fontWeight: "bold",
+    width: width / 1.5,
+    textAlign: "center",
+  },
+});

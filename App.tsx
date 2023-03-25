@@ -55,7 +55,7 @@ const App = () => {
         getDoc(ref)
           .then(async (doc) => {
             if (doc.exists() && doc.data().email) {
-              setUser(doc.data());
+              setUser({ ...doc.data(), id: user.uid });
               setLoading(false);
             } else {
               setLoading(false);
