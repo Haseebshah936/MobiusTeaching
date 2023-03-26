@@ -5,7 +5,6 @@ import CreateAnnouncement from "./CreateAnnouncement";
 import CreateClass from "./CreateClass";
 import ClassSettings from "./ClassSettings";
 import Announcement from "./Announcement";
-import AttachmentViewer from "./AttachmentViewer";
 
 export {
   Class,
@@ -15,5 +14,4 @@ export {
   CreateClass,
   ClassSettings,
   Announcement,
-  AttachmentViewer,
 };

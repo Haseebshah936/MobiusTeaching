@@ -26,10 +26,6 @@ const App = () => {
     return unsubscribe;
   }, []);
 
-  useEffect(() => {
-    console.log("🚀 ~ file: App.tsx:29 ~ getUserAuth ~ user", user);
-  }, [user]);
-
   const getUserAuth = async () => {
     try {
       const auth = await SecureStore.getItemAsync("auth");

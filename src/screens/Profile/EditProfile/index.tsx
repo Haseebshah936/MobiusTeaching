@@ -104,61 +104,63 @@ const EditProfile = ({ navigation }) => {
           handleSubmit, // Function to submit form
           isSubmitting,
         }) => (
-          <ScrollView
-            contentContainerStyle={styles.scrollContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <ImagePicker
-              imageUri={values.profilePic}
-              setImageUri={(uri) => {
-                setFieldValue("profilePic", uri);
-              }}
-              onBlur={() => setFieldTouched("profilePic")}
-              touched={touched.profilePic as boolean}
-              error={errors.profilePic as string}
-              imageContainerStyle={{
-                backgroundColor: colors.grey,
-              }}
-            />
-            <CustomTextInput
-              label="Name"
-              placeholder={"John doe"}
-              onChangeText={handleChange("name")}
-              onBlur={() => setFieldTouched("name")}
-              value={values.name}
-              selectionColor={colors.primary}
-              touched={touched.name as boolean}
-              error={errors.name as string}
-            />
-            <CustomTextInput
-              label="Date of Birth"
-              isDateInput={true}
-              onChangeText={(date: any) => {
-                setFieldValue("dateOfBirth", date);
-              }}
-              onBlur={() => setFieldTouched("dateOfBirth")}
-              value={values.dateOfBirth as any}
-              selectionColor={colors.primary}
-              touched={touched.dateOfBirth as boolean}
-              error={errors.dateOfBirth as string}
-            />
-            <OptionPicker
+          <KeyboardAvoidingView behavior="height">
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              keyboardShouldPersistTaps="handled"
+            >
+              <ImagePicker
+                imageUri={values.profilePic}
+                setImageUri={(uri) => {
+                  setFieldValue("profilePic", uri);
+                }}
+                onBlur={() => setFieldTouched("profilePic")}
+                touched={touched.profilePic as boolean}
+                error={errors.profilePic as string}
+                imageContainerStyle={{
+                  backgroundColor: colors.grey,
+                }}
+              />
+              <CustomTextInput
+                label="Name"
+                placeholder={"John doe"}
+                onChangeText={handleChange("name")}
+                onBlur={() => setFieldTouched("name")}
+                value={values.name}
+                selectionColor={colors.primary}
+                touched={touched.name as boolean}
+                error={errors.name as string}
+              />
+              <CustomTextInput
+                label="Date of Birth"
+                isDateInput={true}
+                onChangeText={(date: any) => {
+                  setFieldValue("dateOfBirth", date);
+                }}
+                onBlur={() => setFieldTouched("dateOfBirth")}
+                value={values.dateOfBirth as any}
+                selectionColor={colors.primary}
+                touched={touched.dateOfBirth as boolean}
+                error={errors.dateOfBirth as string}
+              />
+              {/* <OptionPicker
               label="I am a"
               option1="student"
               option2="teacher"
               value={values.type}
               onChange={(value) => setFieldValue("type", value)}
-            />
-            <CustomButton
-              onPress={handleSubmit}
-              disabled={isSubmitting || !isValid}
-              loading={isSubmitting}
-              text="Update Profile"
-              btnContainerStyle={{
-                marginTop: 20,
-              }}
-            />
-          </ScrollView>
+            /> */}
+              <CustomButton
+                onPress={handleSubmit}
+                disabled={isSubmitting || !isValid}
+                loading={isSubmitting}
+                text="Update Profile"
+                btnContainerStyle={{
+                  marginTop: 20,
+                }}
+              />
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
       </Formik>
     </>
@@ -176,5 +178,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     flexGrow: 1,
     backgroundColor: colors.white,
+    paddingBottom: 100,
   },
 });

@@ -22,6 +22,7 @@ type ImagePickerProps = {
   onBlur?: () => void;
   touched?: boolean;
   error?: string;
+  style?: StyleProp<ViewStyle>;
   containerStyle?: StyleProp<ViewStyle>;
   imageContainerStyle?: StyleProp<ViewStyle>;
   imageFor?: "profile" | "other";
@@ -34,6 +35,7 @@ function ImagePicker({
   onBlur = () => {},
   touched,
   error,
+  style,
   containerStyle,
   imageContainerStyle,
   imageFor = "profile",
@@ -86,7 +88,7 @@ function ImagePicker({
   };
 
   return (
-    <>
+    <View style={[styles.wrapper, style]}>
       <TouchableOpacity
         onPress={() => {
           if (!uploading) handleOnPress();
@@ -128,13 +130,16 @@ function ImagePicker({
         )}
       </TouchableOpacity>
       <Text style={[styles.errorText]}>{touched && error ? error : ""}</Text>
-    </>
+    </View>
   );
 }
 
 export default ImagePicker;
 
 const styles = StyleSheet.create({
+  wrapper: {
+    alignSelf: "flex-start",
+  },
   uploadingContainer: {
     width: 80,
     height: 80,

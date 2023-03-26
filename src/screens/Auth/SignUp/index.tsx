@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 import React from "react";
 import * as yup from "yup";
@@ -78,84 +79,88 @@ const SignUp = ({ navigation }) => {
           handleSubmit, // Function to submit form
           isSubmitting,
         }) => (
-          <ScrollView
-            contentContainerStyle={styles.scrollContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Create an Account</Text>
-            </View>
-            <View>
-              <CustomTextInput
-                label="Email"
-                placeholder={"JohnDoe@example.com"}
-                textContentType="emailAddress"
-                keyboardType="email-address"
-                onChangeText={handleChange("email")}
-                onBlur={() => setFieldTouched("email")}
-                value={values.email}
-                selectionColor={colors.primary}
-                touched={touched.email}
-                error={errors.email}
-              />
-              <CustomTextInput
-                label="Password"
-                placeholder={"Password"}
-                textContentType="password"
-                secureTextEntry
-                onChangeText={handleChange("password")}
-                onBlur={() => setFieldTouched("password")}
-                value={values.password}
-                selectionColor={colors.primary}
-                touched={touched.password}
-                error={errors.password}
-              />
-              <CustomTextInput
-                label="Confirm Password"
-                placeholder={"Confirm Password"}
-                textContentType="password"
-                secureTextEntry
-                onChangeText={handleChange("confirmPassword")}
-                onBlur={() => setFieldTouched("confirmPassword")}
-                value={values.confirmPassword}
-                selectionColor={colors.primary}
-                touched={touched.confirmPassword}
-                error={errors.confirmPassword}
-              />
-            </View>
-            <View style={styles.row}>
-              <View />
-              <TouchableOpacity
-                style={styles.forgetPassowrdContainer}
-                onPress={() => navigation.navigate("ForgotPassword")}
-              >
-                <Text style={styles.forgetPasswordText}>Forget Password?</Text>
-              </TouchableOpacity>
-            </View>
-
-            <CustomButton
-              onPress={handleSubmit}
-              disabled={isSubmitting || !isValid}
-              loading={isSubmitting}
-              text="SIGN UP"
-            />
-
-            <View style={styles.signupTextContainer}>
-              <Text style={{ fontSize: 16, color: colors.black }}>
-                Already have an account?{" "}
-              </Text>
-              <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
-                <Text
-                  style={{
-                    color: colors.primary,
-                    textDecorationLine: "underline",
-                  }}
+          <KeyboardAvoidingView behavior="height">
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.titleContainer}>
+                <Text style={styles.title}>Create an Account</Text>
+              </View>
+              <View>
+                <CustomTextInput
+                  label="Email"
+                  placeholder={"JohnDoe@example.com"}
+                  textContentType="emailAddress"
+                  keyboardType="email-address"
+                  onChangeText={handleChange("email")}
+                  onBlur={() => setFieldTouched("email")}
+                  value={values.email}
+                  selectionColor={colors.primary}
+                  touched={touched.email}
+                  error={errors.email}
+                />
+                <CustomTextInput
+                  label="Password"
+                  placeholder={"Password"}
+                  textContentType="password"
+                  secureTextEntry
+                  onChangeText={handleChange("password")}
+                  onBlur={() => setFieldTouched("password")}
+                  value={values.password}
+                  selectionColor={colors.primary}
+                  touched={touched.password}
+                  error={errors.password}
+                />
+                <CustomTextInput
+                  label="Confirm Password"
+                  placeholder={"Confirm Password"}
+                  textContentType="password"
+                  secureTextEntry
+                  onChangeText={handleChange("confirmPassword")}
+                  onBlur={() => setFieldTouched("confirmPassword")}
+                  value={values.confirmPassword}
+                  selectionColor={colors.primary}
+                  touched={touched.confirmPassword}
+                  error={errors.confirmPassword}
+                />
+              </View>
+              <View style={styles.row}>
+                <View />
+                <TouchableOpacity
+                  style={styles.forgetPassowrdContainer}
+                  onPress={() => navigation.navigate("ForgotPassword")}
                 >
-                  Sign In
+                  <Text style={styles.forgetPasswordText}>
+                    Forget Password?
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <CustomButton
+                onPress={handleSubmit}
+                disabled={isSubmitting || !isValid}
+                loading={isSubmitting}
+                text="SIGN UP"
+              />
+
+              <View style={styles.signupTextContainer}>
+                <Text style={{ fontSize: 16, color: colors.black }}>
+                  Already have an account?{" "}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+                <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
+                  <Text
+                    style={{
+                      color: colors.primary,
+                      textDecorationLine: "underline",
+                    }}
+                  >
+                    Sign In
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
       </Formik>
     </ScreenWrapper>

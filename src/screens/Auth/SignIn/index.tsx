@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  KeyboardAvoidingView,
 } from "react-native";
 import React from "react";
 import * as yup from "yup";
@@ -75,71 +76,75 @@ const Login = ({ navigation }) => {
           handleSubmit, // Function to submit form
           isSubmitting,
         }) => (
-          <ScrollView
-            contentContainerStyle={styles.scrollContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Welcome</Text>
-            </View>
-            <View>
-              <CustomTextInput
-                label="Email"
-                placeholder={"JohnDoe@example.com"}
-                textContentType="emailAddress"
-                keyboardType="email-address"
-                onChangeText={handleChange("email")}
-                onBlur={() => setFieldTouched("email")}
-                value={values.email}
-                selectionColor={colors.primary}
-                touched={touched.email}
-                error={errors.email}
-              />
-              <CustomTextInput
-                label="Password"
-                placeholder={"Password"}
-                textContentType="password"
-                secureTextEntry
-                onChangeText={handleChange("password")}
-                onBlur={() => setFieldTouched("password")}
-                value={values.password}
-                selectionColor={colors.primary}
-                touched={touched.password}
-                error={errors.password}
-              />
-            </View>
-            <View style={styles.row}>
-              <View />
-              <TouchableOpacity
-                style={styles.forgetPassowrdContainer}
-                onPress={() => navigation.navigate("ForgotPassword")}
-              >
-                <Text style={styles.forgetPasswordText}>Forgot Password?</Text>
-              </TouchableOpacity>
-            </View>
-
-            <CustomButton
-              onPress={handleSubmit}
-              disabled={isSubmitting || !isValid}
-              loading={isSubmitting}
-              text="LOGIN"
-            />
-            <View style={styles.signupTextContainer}>
-              <Text style={{ fontSize: 16, color: colors.black }}>
-                You don't have an account yet?{" "}
-              </Text>
-              <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                <Text
-                  style={{
-                    color: colors.primary,
-                    textDecorationLine: "underline",
-                  }}
+          <KeyboardAvoidingView behavior="height">
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.titleContainer}>
+                <Text style={styles.title}>Welcome</Text>
+              </View>
+              <View>
+                <CustomTextInput
+                  label="Email"
+                  placeholder={"JohnDoe@example.com"}
+                  textContentType="emailAddress"
+                  keyboardType="email-address"
+                  onChangeText={handleChange("email")}
+                  onBlur={() => setFieldTouched("email")}
+                  value={values.email}
+                  selectionColor={colors.primary}
+                  touched={touched.email}
+                  error={errors.email}
+                />
+                <CustomTextInput
+                  label="Password"
+                  placeholder={"Password"}
+                  textContentType="password"
+                  secureTextEntry
+                  onChangeText={handleChange("password")}
+                  onBlur={() => setFieldTouched("password")}
+                  value={values.password}
+                  selectionColor={colors.primary}
+                  touched={touched.password}
+                  error={errors.password}
+                />
+              </View>
+              <View style={styles.row}>
+                <View />
+                <TouchableOpacity
+                  style={styles.forgetPassowrdContainer}
+                  onPress={() => navigation.navigate("ForgotPassword")}
                 >
-                  Sign Up
+                  <Text style={styles.forgetPasswordText}>
+                    Forgot Password?
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <CustomButton
+                onPress={handleSubmit}
+                disabled={isSubmitting || !isValid}
+                loading={isSubmitting}
+                text="LOGIN"
+              />
+              <View style={styles.signupTextContainer}>
+                <Text style={{ fontSize: 16, color: colors.black }}>
+                  You don't have an account yet?{" "}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+                <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+                  <Text
+                    style={{
+                      color: colors.primary,
+                      textDecorationLine: "underline",
+                    }}
+                  >
+                    Sign Up
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
       </Formik>
     </ScreenWrapper>

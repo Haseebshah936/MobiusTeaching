@@ -10,9 +10,9 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import moment from "moment";
 import { Feather } from "@expo/vector-icons";
 import Hyperlink from "react-native-hyperlink";
-import * as FileSystem from "expo-file-system";
+import { deleteObject, ref } from "firebase/storage";
+import { deleteDoc, doc, onSnapshot } from "firebase/firestore";
 
-import colors from "../../../utils/colors";
 import {
   AttachmentSellectedButton,
   ConfirmationModalBody,
@@ -21,9 +21,8 @@ import {
   EmptyList,
 } from "../../../components";
 import { useCustomContext } from "../../../hooks/useCustomContext";
-import { deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { db, storage } from "../../../config/firebase";
-import { deleteObject, ref } from "firebase/storage";
+import colors from "../../../utils/colors";
 
 const Announcement = ({ navigation, route }) => {
   const { user } = useCustomContext();

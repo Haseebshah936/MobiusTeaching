@@ -100,73 +100,75 @@ const Settings = ({ navigation }) => {
           handleSubmit, // Function to submit form
           isSubmitting, // True if form is submitting
         }) => (
-          <ScrollView
-            contentContainerStyle={styles.scrollContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <View style={styles.inputContainer}>
-              <CustomTextInput
-                label="Old Password"
-                placeholder={"Old Password"}
-                textContentType={"password"}
-                secureTextEntry
-                onChangeText={handleChange("oldPassword")}
-                onBlur={() => setFieldTouched("oldPassword")}
-                value={values.oldPassword}
-                selectionColor={colors.primary}
-                touched={touched.oldPassword as boolean}
-                error={errors.oldPassword as string}
-                labelStyle={styles.inputLabel}
-                containerStyle={styles.textInputContainer}
-                inputStyle={styles.input}
-              />
-              <CustomTextInput
-                label="New Password"
-                placeholder={"New Password"}
-                textContentType={"password"}
-                secureTextEntry
-                value={values.password}
-                onChangeText={handleChange("password")}
-                onBlur={() => setFieldTouched("password")}
-                selectionColor={colors.primary}
-                touched={touched.password}
-                error={errors.password}
-                labelStyle={styles.inputLabel}
-                containerStyle={styles.textInputContainer}
-                inputStyle={styles.input}
-              />
-              <CustomTextInput
-                label="Confirm Password"
-                placeholder={"Confirm Password"}
-                textContentType={"password"}
-                secureTextEntry
-                onChangeText={handleChange("confirmPassword")}
-                onBlur={() => setFieldTouched("confirmPassword")}
-                value={values.confirmPassword}
-                selectionColor={colors.primary}
-                touched={touched.confirmPassword}
-                error={errors.confirmPassword}
-                labelStyle={styles.inputLabel}
-                containerStyle={styles.textInputContainer}
-                inputStyle={styles.input}
-              />
+          <KeyboardAvoidingView behavior="height">
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.inputContainer}>
+                <CustomTextInput
+                  label="Old Password"
+                  placeholder={"Old Password"}
+                  textContentType={"password"}
+                  secureTextEntry
+                  onChangeText={handleChange("oldPassword")}
+                  onBlur={() => setFieldTouched("oldPassword")}
+                  value={values.oldPassword}
+                  selectionColor={colors.primary}
+                  touched={touched.oldPassword as boolean}
+                  error={errors.oldPassword as string}
+                  labelStyle={styles.inputLabel}
+                  containerStyle={styles.textInputContainer}
+                  inputStyle={styles.input}
+                />
+                <CustomTextInput
+                  label="New Password"
+                  placeholder={"New Password"}
+                  textContentType={"password"}
+                  secureTextEntry
+                  value={values.password}
+                  onChangeText={handleChange("password")}
+                  onBlur={() => setFieldTouched("password")}
+                  selectionColor={colors.primary}
+                  touched={touched.password}
+                  error={errors.password}
+                  labelStyle={styles.inputLabel}
+                  containerStyle={styles.textInputContainer}
+                  inputStyle={styles.input}
+                />
+                <CustomTextInput
+                  label="Confirm Password"
+                  placeholder={"Confirm Password"}
+                  textContentType={"password"}
+                  secureTextEntry
+                  onChangeText={handleChange("confirmPassword")}
+                  onBlur={() => setFieldTouched("confirmPassword")}
+                  value={values.confirmPassword}
+                  selectionColor={colors.primary}
+                  touched={touched.confirmPassword}
+                  error={errors.confirmPassword}
+                  labelStyle={styles.inputLabel}
+                  containerStyle={styles.textInputContainer}
+                  inputStyle={styles.input}
+                />
+                <CustomButton
+                  onPress={handleSubmit}
+                  // styleBtn={styles.button}
+                  // styleText={styles.buttonText}
+                  disabled={isSubmitting || !isValid}
+                  loading={isSubmitting}
+                  text={"Update Password"}
+                />
+              </View>
               <CustomButton
-                onPress={handleSubmit}
-                // styleBtn={styles.button}
-                // styleText={styles.buttonText}
-                disabled={isSubmitting || !isValid}
-                loading={isSubmitting}
-                text={"Update Password"}
+                styleBtn={styles.button}
+                text={"Delete Account"}
+                onPress={() => {
+                  deleteModalRef.current.open();
+                }}
               />
-            </View>
-            <CustomButton
-              styleBtn={styles.button}
-              text={"Delete Account"}
-              onPress={() => {
-                deleteModalRef.current.open();
-              }}
-            />
-          </ScrollView>
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
       </Formik>
       <CustomModal modalRef={deleteModalRef}>
@@ -199,6 +201,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingVertical: 40,
     paddingHorizontal: 20,
+    paddingBottom: 100,
     justifyContent: "space-between",
   },
   inputContainer: {

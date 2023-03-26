@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, ScrollView, Image, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  Alert,
+  KeyboardAvoidingView,
+} from "react-native";
 import React from "react";
 import * as yup from "yup";
 import { Formik } from "formik";
@@ -55,50 +63,52 @@ const ForgotPassword = ({ navigation }) => {
           handleSubmit, // Function to submit form
           isSubmitting,
         }) => (
-          <ScrollView
-            contentContainerStyle={styles.scrollContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Forgot Password?</Text>
-            </View>
-            <Image
-              style={styles.logo}
-              source={require("../../../assets/icon.png")}
-            />
-            <View style={styles.inputContainer}>
-              <CustomTextInput
-                label="Email"
-                placeholder={"JohnDoe@example.com"}
-                textContentType="emailAddress"
-                keyboardType="email-address"
-                onChangeText={handleChange("email")}
-                onBlur={() => setFieldTouched("email")}
-                value={values.email}
-                selectionColor={colors.primary}
-                touched={touched.email}
-                error={errors.email}
+          <KeyboardAvoidingView behavior="height">
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.titleContainer}>
+                <Text style={styles.title}>Forgot Password?</Text>
+              </View>
+              <Image
+                style={styles.logo}
+                source={require("../../../assets/icon.png")}
               />
-            </View>
+              <View style={styles.inputContainer}>
+                <CustomTextInput
+                  label="Email"
+                  placeholder={"JohnDoe@example.com"}
+                  textContentType="emailAddress"
+                  keyboardType="email-address"
+                  onChangeText={handleChange("email")}
+                  onBlur={() => setFieldTouched("email")}
+                  value={values.email}
+                  selectionColor={colors.primary}
+                  touched={touched.email}
+                  error={errors.email}
+                />
+              </View>
 
-            <CustomButton
-              onPress={handleSubmit}
-              disabled={isSubmitting || !isValid}
-              loading={isSubmitting}
-              text="RESET PASSWORD"
-            />
-            <CustomButton
-              onPress={() => navigation.navigate("SignIn")}
-              text="BACK TO LOGIN"
-              styleBtn={{
-                backgroundColor: colors.white,
-                borderColor: colors.lightPurple,
-                borderWidth: 1,
-              }}
-              styleText={{ color: colors.black }}
-              loaderColor={colors.primary}
-            />
-          </ScrollView>
+              <CustomButton
+                onPress={handleSubmit}
+                disabled={isSubmitting || !isValid}
+                loading={isSubmitting}
+                text="RESET PASSWORD"
+              />
+              <CustomButton
+                onPress={() => navigation.navigate("SignIn")}
+                text="BACK TO LOGIN"
+                styleBtn={{
+                  backgroundColor: colors.white,
+                  borderColor: colors.black,
+                  borderWidth: 1,
+                }}
+                styleText={{ color: colors.black }}
+                loaderColor={colors.primary}
+              />
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
       </Formik>
     </ScreenWrapper>

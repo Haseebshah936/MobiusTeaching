@@ -5,6 +5,7 @@ import {
   ScrollView,
   Alert,
   SafeAreaView,
+  KeyboardAvoidingView,
 } from "react-native";
 import React from "react";
 import * as yup from "yup";
@@ -100,61 +101,64 @@ const CreateProfile = ({ navigation }) => {
           handleSubmit, // Function to submit form
           isSubmitting,
         }) => (
-          <ScrollView
-            contentContainerStyle={styles.scrollContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Create Profile</Text>
-            </View>
-            <ImagePicker
-              imageUri={values.profilePic}
-              setImageUri={(uri) => setFieldValue("profilePic", uri)}
-              onBlur={() => setFieldTouched("profilePic")}
-              touched={touched.profilePic}
-              error={errors.profilePic}
-            />
-            <View>
-              <CustomTextInput
-                label="Name"
-                placeholder={"John doe"}
-                onChangeText={handleChange("name")}
-                onBlur={() => setFieldTouched("name")}
-                value={values.name}
-                selectionColor={colors.primary}
-                touched={touched.name}
-                error={errors.name}
+          <KeyboardAvoidingView behavior="height">
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.titleContainer}>
+                <Text style={styles.title}>Create Profile</Text>
+              </View>
+              <ImagePicker
+                imageUri={values.profilePic}
+                setImageUri={(uri) => setFieldValue("profilePic", uri)}
+                onBlur={() => setFieldTouched("profilePic")}
+                touched={touched.profilePic}
+                error={errors.profilePic}
+                containerStyle={{ alignSelf: "flex-start" }}
               />
-              <CustomTextInput
-                label="Date of Birth"
-                isDateInput={true}
-                onChangeText={(date: any) => {
-                  setFieldValue("dateOfBirth", date);
+              <View>
+                <CustomTextInput
+                  label="Name"
+                  placeholder={"John doe"}
+                  onChangeText={handleChange("name")}
+                  onBlur={() => setFieldTouched("name")}
+                  value={values.name}
+                  selectionColor={colors.primary}
+                  touched={touched.name}
+                  error={errors.name}
+                />
+                <CustomTextInput
+                  label="Date of Birth"
+                  isDateInput={true}
+                  onChangeText={(date: any) => {
+                    setFieldValue("dateOfBirth", date);
+                  }}
+                  onBlur={() => setFieldTouched("dateOfBirth")}
+                  value={values.dateOfBirth}
+                  selectionColor={colors.primary}
+                  touched={touched.dateOfBirth}
+                  error={errors.dateOfBirth}
+                />
+                <OptionPicker
+                  label="I am a"
+                  option1="student"
+                  option2="teacher"
+                  value={values.type}
+                  onChange={(value) => setFieldValue("type", value)}
+                />
+              </View>
+              <CustomButton
+                onPress={handleSubmit}
+                disabled={isSubmitting || !isValid}
+                loading={isSubmitting}
+                text="Create Profile"
+                btnContainerStyle={{
+                  marginTop: 20,
                 }}
-                onBlur={() => setFieldTouched("dateOfBirth")}
-                value={values.dateOfBirth}
-                selectionColor={colors.primary}
-                touched={touched.dateOfBirth}
-                error={errors.dateOfBirth}
               />
-              <OptionPicker
-                label="I am a"
-                option1="student"
-                option2="teacher"
-                value={values.type}
-                onChange={(value) => setFieldValue("type", value)}
-              />
-            </View>
-            <CustomButton
-              onPress={handleSubmit}
-              disabled={isSubmitting || !isValid}
-              loading={isSubmitting}
-              text="Create Profile"
-              btnContainerStyle={{
-                marginTop: 20,
-              }}
-            />
-          </ScrollView>
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
       </Formik>
     </SafeAreaView>

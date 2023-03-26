@@ -1,4 +1,10 @@
-import { StyleSheet, View, ScrollView, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+} from "react-native";
 import React from "react";
 import * as yup from "yup";
 import { Formik } from "formik";
@@ -88,56 +94,58 @@ const ClassSettings = ({ navigation, route }) => {
           handleSubmit, // Function to submit form
           isSubmitting,
         }) => (
-          <ScrollView
-            contentContainerStyle={styles.scrollContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <ImagePicker
-              imageUri={values.image}
-              setImageUri={(uri) => {
-                setFieldValue("image", uri);
-              }}
-              onBlur={() => setFieldTouched("image")}
-              touched={touched.image as boolean}
-              error={errors.image as string}
-              imageContainerStyle={{
-                backgroundColor: colors.grey,
-              }}
-              imageFor="other"
-            />
-            <CustomTextInput
-              label="Class Name"
-              placeholder={"Mathematics"}
-              onChangeText={handleChange("name")}
-              onBlur={() => setFieldTouched("name")}
-              value={values.name}
-              selectionColor={colors.primary}
-              touched={touched.name as boolean}
-              error={errors.name as string}
-            />
-            <CustomTextInput
-              label="Description"
-              placeholder={"What do you teach?"}
-              onChangeText={handleChange("description")}
-              onBlur={() => setFieldTouched("description")}
-              value={values.description}
-              selectionColor={colors.primary}
-              multiline
-              numberOfLines={4}
-              inputContainerStyle={styles.descriptoinContainer}
-              touched={touched.description as boolean}
-              error={errors.description as string}
-            />
-            <CustomButton
-              onPress={handleSubmit}
-              disabled={isSubmitting || !isValid}
-              loading={isSubmitting}
-              text="Update Class"
-              btnContainerStyle={{
-                marginTop: 20,
-              }}
-            />
-          </ScrollView>
+          <KeyboardAvoidingView behavior="height">
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              keyboardShouldPersistTaps="handled"
+            >
+              <ImagePicker
+                imageUri={values.image}
+                setImageUri={(uri) => {
+                  setFieldValue("image", uri);
+                }}
+                onBlur={() => setFieldTouched("image")}
+                touched={touched.image as boolean}
+                error={errors.image as string}
+                imageContainerStyle={{
+                  backgroundColor: colors.grey,
+                }}
+                imageFor="other"
+              />
+              <CustomTextInput
+                label="Class Name"
+                placeholder={"Mathematics"}
+                onChangeText={handleChange("name")}
+                onBlur={() => setFieldTouched("name")}
+                value={values.name}
+                selectionColor={colors.primary}
+                touched={touched.name as boolean}
+                error={errors.name as string}
+              />
+              <CustomTextInput
+                label="Description"
+                placeholder={"What do you teach?"}
+                onChangeText={handleChange("description")}
+                onBlur={() => setFieldTouched("description")}
+                value={values.description}
+                selectionColor={colors.primary}
+                multiline
+                numberOfLines={4}
+                inputContainerStyle={styles.descriptoinContainer}
+                touched={touched.description as boolean}
+                error={errors.description as string}
+              />
+              <CustomButton
+                onPress={handleSubmit}
+                disabled={isSubmitting || !isValid}
+                loading={isSubmitting}
+                text="Update Class"
+                btnContainerStyle={{
+                  marginTop: 20,
+                }}
+              />
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
       </Formik>
     </View>
@@ -154,6 +162,8 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingHorizontal: 20,
     paddingVertical: 20,
+    flexGrow: 1,
+    paddingBottom: 100,
   },
   descriptoinContainer: {
     paddingVertical: 0,

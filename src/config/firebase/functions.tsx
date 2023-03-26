@@ -55,10 +55,14 @@ type uploadImage = (imageReferenceID: any, uri: any) => Promise<void>;
 
 const uploadImage = async (imageReferenceID: any, uri: any) => {
   if (uri) {
-    const result = await ImageManipulator.manipulateAsync(uri, [], {
-      compress: 1,
-      format: ImageManipulator.SaveFormat.JPEG,
-    });
+    const result = await ImageManipulator.manipulateAsync(
+      uri,
+      [{ resize: { width: 100, height: 100 } }],
+      {
+        compress: 0.5,
+        format: ImageManipulator.SaveFormat.JPEG,
+      }
+    );
     const response = await fetch(result.uri);
     const blob = await response.blob();
     const storageRef = ref(storage, imageReferenceID);
