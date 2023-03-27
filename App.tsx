@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
-import { onAuthStateChanged } from "firebase/auth";
+import { Unsubscribe, onAuthStateChanged } from "firebase/auth";
 import { NavigationContainer } from "@react-navigation/native";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import * as SecureStore from "expo-secure-store";
@@ -19,11 +19,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let unsubscribe;
-    getUserAuth().then(() => {
-      unsubscribe = authListener();
-    });
-    return unsubscribe;
+    authListener();
   }, []);
 
   const getUserAuth = async () => {
