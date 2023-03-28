@@ -80,7 +80,7 @@ const EditProfile = ({ navigation }) => {
   };
 
   return (
-    <>
+    <View style={styles.container}>
       <Formik
         initialValues={{
           profilePic: user?.profilePic,
@@ -163,7 +163,7 @@ const EditProfile = ({ navigation }) => {
           </KeyboardAvoidingView>
         )}
       </Formik>
-    </>
+    </View>
   );
 };
 
@@ -172,6 +172,7 @@ export default EditProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.white,
   },
   scrollContainer: {
     paddingHorizontal: 20,
